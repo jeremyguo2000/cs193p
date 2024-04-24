@@ -15,20 +15,18 @@ struct ContentView: View {
         case sports
     }
     
-    var themes = [Theme.furniture: ["🪑","🛋️","🛌","📺","🪑","🛋️","🛌","📺"],
+    @State var themes = [Theme.furniture: ["🪑","🛋️","🛌","📺","🪑","🛋️","🛌","📺"],
                   Theme.animals: ["🐶","🐭","🐞","🪿","🐢","🐶","🐭","🐞","🪿","🐢"],
                   Theme.sports: ["⚽️","🏀","🏈","⚾️","🏓","🎳","⚽️","🏀","🏈","⚾️","🏓","🎳"]]
     
-    // TODO: use enums for the theme
     @State var theme: Theme = Theme.furniture
     
-    // TODO: deprecate this cardCount, call it pairCount
-    // TODO: create a function to update this when the theme changes
     @State var cardCount: Int = 0
         
     var body: some View {
         VStack {
             title
+            helpfulInstructions
             ScrollView {
                 cards
             }
@@ -48,49 +46,27 @@ struct ContentView: View {
         }
     }
     
-    func themeSetter(symbol: String, caption: String, selectedTheme: Theme) -> some View {
-        
-        // TODO needs to update the theme by calling the appropriate theme setters
-        // TODO what should the return type be?
-        // TODO: this should have some side effects
-        
-        //Button(<#PrimitiveButtonStyleConfiguration#>)
-        print("inside themeSetter")
-        
-        return Button(caption, systemImage: symbol, action: {
-            print("pressed ")
-            
-            let printCaption = " the caption for this button is \(caption)"
-            print(printCaption)
-            
-            // TODO: why is this shit called 3 times??
-            let printTheme = " the theme selected by this button is \(theme)"
-            print(printTheme)
-            theme = selectedTheme
-    
-            
-            // TODO: shuffle?
-            // themes[theme]?.shuffle()
-            
-            cardCount = themes[theme]!.count
-            let printCardCount = " the cardcount for this theme is \(cardCount)"
-            print(printCardCount)
-            
-        })
-            .font(.caption).labelStyle(VerticalLabelStyle())
-            //Image(systemName: symbol)
-            //Text(caption).font(.caption2)
-
+    func resetCardsFaceDown() {
+        print("resetting!!!")
+        // TODO: when you change theme, all the cards must go back to original flipped state!
     }
     
-    // TODO: i don't think u need 3 of these
+    func themeSetter(symbol: String, caption: String, selectedTheme: Theme) -> some View {
+            
+        return Button(caption, systemImage: symbol, action: {
+            theme = selectedTheme
+            themes[theme]?.shuffle()
+            resetCardsFaceDown()
+            cardCount = themes[theme]!.count
+        })
+            .font(.caption).labelStyle(VerticalLabelStyle())
+    }
+    
     var furnitureThemeSetter: some View {
-        // TODO:
         themeSetter(symbol: "sofa", caption: "furniture", selectedTheme:Theme.furniture)
     }
     
     var animalThemeSetter: some View {
-        // TODO combine these 2 into 1
         themeSetter(symbol: "tortoise", caption: "animals", selectedTheme:Theme.animals)
     }
     
@@ -98,9 +74,26 @@ struct ContentView: View {
         themeSetter(symbol: "baseball", caption: "sports", selectedTheme:Theme.sports)
     }
     
-    
     var title: some View {
         Text("Memorize!").font(.largeTitle)
+    }
+    
+    func styleHelpfulInstructions(_ text: Text) -> some View {
+        text.font(.title3).multilineTextAlignment(.center)
+    }
+    
+    var helpfulInstructions: some View {
+        var instructions = Text("")
+        if cardCount == 0 {
+            instructions = Text("Press any of the buttons below to begin!")
+            return  AnyView(VStack {
+                Spacer()
+                styleHelpfulInstructions(instructions)
+            })
+        } else {
+            return AnyView(styleHelpfulInstructions(instructions))
+        }
+        
     }
     
     var cards: some View {
@@ -124,27 +117,6 @@ struct ContentView: View {
         .font(.largeTitle)
     }
     
-/*
-    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
-        Button(action: {
-            if cardCount > 1 {
-                cardCount += offset
-            }
-            
-        }, label: {
-            Image(systemName: symbol)
-        })
-        .disabled(cardCount+offset < 1 || cardCount+offset>themes[theme]!.count)
-    }
-    
-    var cardRemover: some View {
-        cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
-    }
-    
-    var cardAdder: some View {
-        cardCountAdjuster(by: 1, symbol: "rectangle.stack.badge.plus.fill")
-    } 
-    */
 }
 
 struct CardView: View {
