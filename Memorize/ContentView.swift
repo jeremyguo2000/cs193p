@@ -7,21 +7,26 @@
 
 import SwiftUI
 
+enum Theme: String {
+    case furniture
+    case animals
+    case sports
+}
+
+let furnitureCards = [Card("🪑"),Card("🛋️"),Card("🛌"),Card("📺"),Card("🪑"),Card("🛋️"),Card("🛌"),Card("📺")]
+let animalCards = [Card("🐶"),Card("🐭"),Card("🐞"),Card("🪿"),Card("🐢"),Card("🐶"),Card("🐭"),Card("🐞"),Card("🪿"),Card("🐢")]
+let sportsCards = [Card("⚽️"),Card("🏀"),Card("🏈"),Card("⚾️"),Card("🏓"),Card("🎳"),Card("⚽️"),Card("🏀"),Card("🏈"),Card("⚾️"),Card("🏓"),Card("🎳")]
+
 struct ContentView: View {
-    
-    enum Theme: String {
-        case furniture
-        case animals
-        case sports
-    }
-    
-    @State var themes = [Theme.furniture: ["🪑","🛋️","🛌","📺","🪑","🛋️","🛌","📺"],
-                  Theme.animals: ["🐶","🐭","🐞","🪿","🐢","🐶","🐭","🐞","🪿","🐢"],
-                  Theme.sports: ["⚽️","🏀","🏈","⚾️","🏓","🎳","⚽️","🏀","🏈","⚾️","🏓","🎳"]]
-    
+    @State var themes = [Theme.furniture: furnitureCards,
+                  Theme.animals: animalCards,
+                  Theme.sports: sportsCards]
     @State var theme: Theme = Theme.furniture
-    
+    @State var themeCards: Array<Card> = furnitureCards
     @State var cardCount: Int = 0
+    
+    // TODO: this is problematic
+    @State var shouldFlipFacedown = false // when we re-select a theme, need to flip all the cards
         
     var body: some View {
         VStack {
@@ -49,13 +54,20 @@ struct ContentView: View {
     func resetCardsFaceDown() {
         print("resetting!!!")
         // TODO: when you change theme, all the cards must go back to original flipped state!
+        // flip them facedown
+        shouldFlipFacedown = true
     }
     
     func themeSetter(symbol: String, caption: String, selectedTheme: Theme) -> some View {
             
         return Button(caption, systemImage: symbol, action: {
             theme = selectedTheme
-            themes[theme]?.shuffle()
+            themeCards = themes[theme]!
+            
+            print("the theme is \(theme)\n")
+            print("the cards are previously  \(String(describing: themeCards))\n")
+            themeCards.shuffle()
+            print("the cards are now  \(String(describing: themeCards))\n")
             resetCardsFaceDown()
             cardCount = themes[theme]!.count
         })
@@ -98,11 +110,12 @@ struct ContentView: View {
     
     var cards: some View {
         LazyVGrid(columns:[GridItem(.adaptive(minimum: 100))]) {
-            ForEach(0..<cardCount, id: \.self) {index in
-                CardView(content:themes[theme]![index])
+            ForEach(0..<cardCount, id: \.self) { index in
+                CardView(content: themeCards[index])
                     .aspectRatio(2/3, contentMode: .fit)
             }
-        }.foregroundColor(.orange)
+        }
+        .foregroundColor(.orange)
     }
     
     var themeSelectors: some View {
@@ -119,8 +132,18 @@ struct ContentView: View {
     
 }
 
+// each card should be an object with (emoji, flipped state)
+struct Card {
+    let emoji: String
+    
+    init(_ emoji: String) {
+        self.emoji = emoji
+    }
+}
+
 struct CardView: View {
-    let content: String
+    var content: Card
+
     @State var isFaceUp = false
     
     var body: some View {
@@ -129,13 +152,19 @@ struct CardView: View {
             Group {
                 base.fill(.white)
                 base.strokeBorder(lineWidth: 2)
-                Text(content).font(.largeTitle)
+                Text(content.emoji).font(.largeTitle)
             }
             .opacity(isFaceUp ? 1 : 0)
             base.fill().opacity(isFaceUp ? 0 : 1)
         }).onTapGesture(count: 1, perform: {
             isFaceUp.toggle()
         })
+    }
+    
+    // you can have methods associated with a struct
+    // TODO: remove
+    func setFacedown() {
+        isFaceUp = false
     }
 }
 
