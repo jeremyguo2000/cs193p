@@ -25,9 +25,6 @@ struct ContentView: View {
     @State var themeCards: Array<Card> = furnitureCards
     @State var cardCount: Int = 0
     
-    // TODO: this is problematic
-    @State var shouldFlipFacedown = false // when we re-select a theme, need to flip all the cards
-        
     var body: some View {
         VStack {
             title
@@ -51,24 +48,12 @@ struct ContentView: View {
         }
     }
     
-    func resetCardsFaceDown() {
-        print("resetting!!!")
-        // TODO: when you change theme, all the cards must go back to original flipped state!
-        // flip them facedown
-        shouldFlipFacedown = true
-    }
-    
     func themeSetter(symbol: String, caption: String, selectedTheme: Theme) -> some View {
             
         return Button(caption, systemImage: symbol, action: {
             theme = selectedTheme
             themeCards = themes[theme]!
-            
-            print("the theme is \(theme)\n")
-            print("the cards are previously  \(String(describing: themeCards))\n")
             themeCards.shuffle()
-            print("the cards are now  \(String(describing: themeCards))\n")
-            resetCardsFaceDown()
             cardCount = themes[theme]!.count
         })
             .font(.caption).labelStyle(VerticalLabelStyle())
@@ -161,11 +146,6 @@ struct CardView: View {
         })
     }
     
-    // you can have methods associated with a struct
-    // TODO: remove
-    func setFacedown() {
-        isFaceUp = false
-    }
 }
 
 #Preview {
