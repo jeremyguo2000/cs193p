@@ -7,6 +7,7 @@
 
 import Foundation
 
+// This is the Model
 struct MemoryGame<CardContent> {
     private(set) var cards: Array<Card>
     
@@ -14,10 +15,10 @@ struct MemoryGame<CardContent> {
         cards = []
         
         // add 2*numberOfPairsOfCards
-        for pairIndex in 0..<numberOfPairsOfCards {
+        for pairIndex in 0..<max(2, numberOfPairsOfCards) {
             let content = cardContentFactory(pairIndex)
-            cards.append(Card(isFaceUp: false, isMatched: false, content: content))
-            cards.append(Card(isFaceUp: false, isMatched: false, content: content))
+            cards.append(Card(content: content))
+            cards.append(Card(content: content))
         }
     }
     
@@ -25,6 +26,9 @@ struct MemoryGame<CardContent> {
         
     }
     
+    mutating func shuffle() {
+        cards.shuffle()
+    }
     struct Card {
         // part of MemoryGame namespace
         var isFaceUp = true
