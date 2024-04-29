@@ -22,7 +22,7 @@ class EmojiMemoryGame: ObservableObject {
         }
     }
     
-    // makes a change happen
+    // @Published propagates changes to the UI i.e. the view
     @Published private var model = createMemoryGame()
     
     var cards: Array<MemoryGame<String>.Card> {
@@ -32,6 +32,11 @@ class EmojiMemoryGame: ObservableObject {
     // MARK: - Intents
     func shuffle() {
         model.shuffle()
+    }
+    
+    func newGame() {
+        print("Starting new game!")
+        model = EmojiMemoryGame.createMemoryGame()
     }
     
     func choose(_ card: MemoryGame<String>.Card) {
