@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import SwiftUI
 
 // This is the Model
+
 // CardContent must conform to equatable
 struct MemoryGame<CardContent> where CardContent : Equatable {
     private(set) var cards: Array<Card>

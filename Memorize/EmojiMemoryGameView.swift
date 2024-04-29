@@ -8,13 +8,6 @@
 import SwiftUI
 
 // This is the view
-
-enum Theme: String {
-    case furniture
-    case animals
-    case sports
-}
-
 struct EmojiMemoryGameView: View {
     // Observed objects are always passed into you. This view is passed into you
     // no equals, no assignment etc.
@@ -62,7 +55,7 @@ struct EmojiMemoryGameView: View {
                     }
             }
         }
-        .foregroundColor(.orange)
+        .foregroundColor(viewModel.getThemeCardColor())
     }
 }
 
