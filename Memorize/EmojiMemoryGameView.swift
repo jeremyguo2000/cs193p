@@ -16,15 +16,16 @@ struct EmojiMemoryGameView: View {
     var body: some View {
         VStack {
             title
+            Spacer()
+            curTheme
+            Spacer()
             ScrollView {
                 cards.animation(.default, value: viewModel.cards)
             }
             Spacer()
-            HStack {
-                Button("New Game") {
-                    viewModel.newGame()
-                    viewModel.shuffle()
-                }
+            Button("New Game") {
+                viewModel.newGame()
+                viewModel.shuffle()
             }
         }
         .padding()
@@ -40,6 +41,13 @@ struct EmojiMemoryGameView: View {
         }
     }
     
+    var curTheme: some View {
+        Text("\(viewModel.getTheme)")
+            .font(.title3)
+            .padding(15)
+            .border(Color.yellow, width: 1)
+    }
+
     var title: some View {
         Text("Memorize!").font(.largeTitle)
     }
