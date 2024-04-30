@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 // this is the ViewModel
 class EmojiMemoryGame: ObservableObject {
    
@@ -18,19 +17,14 @@ class EmojiMemoryGame: ObservableObject {
         let cardColor: Color
     }
 
-    // TODO: check the number of pairs thing (requirement number 7)
-    
-    private static let furnitureThemeData = ThemeData(name: "furniture", emoji:["🛋️", "🛏️", "🪑", "🚪", "🪞", "🪟"], numPairs: 6, cardColor: .green)
-    private static let animalsThemeData = ThemeData(name: "animals", emoji: ["🐶", "🐱", "🐭", "🐰", "🐻", "🐯"], numPairs: 6, cardColor: .red)
-    private static let sportsThemeData = ThemeData(name: "sports", emoji: ["⚽", "🏀", "🎾", "🏈", "🏓", "🏐"], numPairs: 6, cardColor: .orange)
-    private static let foodThemeData = ThemeData(name: "food", emoji: ["🍕", "🍔", "🍣", "🍝", "🍦", "🍰"], numPairs: 6, cardColor: .yellow)
-    private static let flagsThemeData = ThemeData(name: "flags", emoji: ["🇺🇸", "🇬🇧", "🇨🇦", "🇯🇵", "🇫🇷", "🇩🇪"], numPairs: 6, cardColor: .blue)
-    private static let smileysThemeData = ThemeData(name: "smileys", emoji: ["😊", "😄", "😁", "😃", "😆", "😋"], numPairs: 6, cardColor: .purple)
-    
-    private static let themes = [furnitureThemeData, animalsThemeData, sportsThemeData, foodThemeData, flagsThemeData, smileysThemeData]
-    
-    // namespaces inside class -> EmojiMemoryGame.emojis
-    // private static let emojis = ["🎃", "👻", "🦇", "🧛‍♂️", "🕷️", "🕸️", "🧟‍♂️", "🦴", "🍬", "🔮", "🧙‍♀️", "🌙"]
+    private static let themesData = [
+        "furniture": ThemeData(name: "furniture", emoji:["🛋️", "🛏️", "🪑", "🚪", "🪞", "🪟"], numPairs: 6, cardColor: .green),
+        "animals": ThemeData(name: "animals", emoji: ["🐶", "🐱", "🐭", "🐰", "🐻", "🐯"], numPairs: 5, cardColor: .red),
+        "sports": ThemeData(name: "sports", emoji: ["⚽", "🏀", "🎾", "🏈", "🏓", "🏐"], numPairs: 4, cardColor: .orange),
+        "food": ThemeData(name: "food", emoji: ["🍕", "🍔", "🍣", "🍝", "🍦", "🍰"], numPairs: 4, cardColor: .yellow),
+        "flags": ThemeData(name: "flags", emoji: ["🇺🇸", "🇬🇧", "🇨🇦", "🇯🇵", "🇫🇷", "🇩🇪"], numPairs: 5, cardColor: .blue),
+        "smileys": ThemeData(name: "smileys", emoji: ["😊", "😄", "😁", "😃", "😆", "😋"], numPairs: 6, cardColor: .purple)
+    ]
     
     // TODO: why don't i need published on model?
     private var theme: ThemeData
@@ -38,14 +32,16 @@ class EmojiMemoryGame: ObservableObject {
     @Published private var model: MemoryGame<String>
     
     init() {
-        theme = EmojiMemoryGame.themes.randomElement()!
+        theme = EmojiMemoryGame.themesData.randomElement()!.value
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
     }
     
-    private static func createMemoryGame(theme: ThemeData) -> MemoryGame<String>{
-        
-        // theme = themes.randomElement()!
-        return MemoryGame<String>(numberOfPairsOfCards: theme.numPairs) {pairIndex in
+    // creates memory game and cards based on the theme
+    // where is pairIndex coming from? --> MemoryGame
+    private static func createMemoryGame(theme: ThemeData) -> MemoryGame<String> {
+        return MemoryGame<String>(numberOfPairsOfCards: theme.numPairs, 
+                                  allThemeEmoji: theme.emoji) { pairIndex in
+            // this closure is the cardContentFactory, but it's only checking if it's inbounds
             if theme.emoji.indices.contains(pairIndex) {
                 return theme.emoji[pairIndex]
             } else {
@@ -54,21 +50,17 @@ class EmojiMemoryGame: ObservableObject {
         }
     }
     
-
-    
-    
     var cards: Array<MemoryGame<String>.Card> {
         return model.cards
     }
     
-    // MARK: - Intents
     func shuffle() {
         model.shuffle()
     }
     
     func newGame() {
         print("Starting new game!")
-        theme = EmojiMemoryGame.themes.randomElement()!
+        theme = EmojiMemoryGame.themesData.randomElement()!.value
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
     }
     
