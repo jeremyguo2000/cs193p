@@ -23,6 +23,9 @@ struct EmojiMemoryGameView: View {
                 cards.animation(.default, value: viewModel.cards)
             }
             Spacer()
+            score
+            Spacer()
+    
             Button("New Game") {
                 viewModel.newGame()
                 viewModel.shuffle()
@@ -41,11 +44,15 @@ struct EmojiMemoryGameView: View {
         }
     }
     
+    var score: some View {
+        Text("score: \(viewModel.score)")
+    }
+    
     var curTheme: some View {
         Text("\(viewModel.getTheme)")
             .font(.title3)
             .padding(15)
-            .border(Color.yellow, width: 1)
+            .border(viewModel.getThemeCardColor(), width: 1)
     }
 
     var title: some View {
@@ -87,7 +94,11 @@ struct CardView: View {
             }
             .opacity(card.isFaceUp ? 1 : 0)
             base.fill().opacity(card.isFaceUp ? 0 : 1)
-        }).opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+        })
+        // removes matched cards from the screen 
+        .opacity(card.isFaceUp || !card.isMatched ? 1 : 0)
+        
+        
     }
     
 }

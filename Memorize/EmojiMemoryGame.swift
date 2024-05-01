@@ -54,6 +54,10 @@ class EmojiMemoryGame: ObservableObject {
         return model.cards
     }
     
+    var score: Int {
+        return model.score
+    }
+    
     var getTheme: String {
         return theme.name
     }
@@ -64,6 +68,8 @@ class EmojiMemoryGame: ObservableObject {
     
     func newGame() {
         print("Starting new game!")
+        // TODO: newGame shuffles, but when the app first starts up it doesn't
+        
         theme = EmojiMemoryGame.themesData.randomElement()!.value
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
     }
