@@ -25,15 +25,14 @@ class EmojiMemoryGame: ObservableObject {
         "flags": ThemeData(name: "flags", emoji: ["🇺🇸", "🇬🇧", "🇨🇦", "🇯🇵", "🇫🇷", "🇩🇪"], numPairs: 5, cardColor: .blue),
         "smileys": ThemeData(name: "smileys", emoji: ["😊", "😄", "😁", "😃", "😆", "😋"], numPairs: 6, cardColor: .purple)
     ]
-    
-    // TODO: why don't i need published on model?
+
     private var theme: ThemeData
     // @Published propagates changes to the UI i.e. the view
     @Published private var model: MemoryGame<String>
     
     init() {
         theme = EmojiMemoryGame.themesData.randomElement()!.value
-        model = EmojiMemoryGame.createMemoryGame(theme: theme)
+        model = EmojiMemoryGame.createMemoryGame(theme: self.theme)
     }
     
     // creates memory game and cards based on the theme
@@ -67,9 +66,6 @@ class EmojiMemoryGame: ObservableObject {
     }
     
     func newGame() {
-        print("Starting new game!")
-        // TODO: newGame shuffles, but when the app first starts up it doesn't
-        
         theme = EmojiMemoryGame.themesData.randomElement()!.value
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
     }
@@ -77,7 +73,7 @@ class EmojiMemoryGame: ObservableObject {
     func choose(_ card: MemoryGame<String>.Card) {
         model.choose(card)
     }
-    
+
     func getThemeCardColor() -> Color {
         return theme.cardColor
     }

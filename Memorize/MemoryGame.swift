@@ -27,6 +27,9 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
             cards.append(Card(content: content, id: "\(pairIndex+1)a"))
             cards.append(Card(content: content, id: "\(pairIndex+1)b"))
         }
+        
+        // shuffle even for the very first set
+        shuffle()
     }
     
     mutating func choose(_ card: Card) {
@@ -41,11 +44,8 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
                         cards[potentialMatchIndex].isMatched = true
                         score += 2
                     } else {
-                        // no match, must be penalized if we have seen this
-                        score -= (cards[chosenIndex].isSeen ? 1 : 0) + (cards[potentialMatchIndex].isSeen ? 1 : 0)
-
-                        
                         // future mismatches involving these cards are penalized
+                        score -= (cards[chosenIndex].isSeen ? 1 : 0) + (cards[potentialMatchIndex].isSeen ? 1 : 0)
                         cards[chosenIndex].isSeen = true
                         cards[potentialMatchIndex].isSeen = true
                     }
