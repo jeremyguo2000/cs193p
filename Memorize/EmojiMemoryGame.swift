@@ -39,7 +39,7 @@ class EmojiMemoryGame: ObservableObject {
     // where is pairIndex coming from? --> MemoryGame
     private static func createMemoryGame(theme: ThemeData) -> MemoryGame<String> {
         return MemoryGame<String>(numberOfPairsOfCards: theme.numPairs, 
-                                  allThemeEmoji: theme.emoji) { pairIndex in
+                                  numThemeEmoji: theme.emoji.count) { pairIndex in
             // this closure is the cardContentFactory, but it's only checking if it's inbounds
             if theme.emoji.indices.contains(pairIndex) {
                 return theme.emoji[pairIndex]

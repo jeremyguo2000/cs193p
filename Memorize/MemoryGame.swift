@@ -15,11 +15,11 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
     private(set) var cards: Array<Card>
     private(set) var score = 0
     
-    init(numberOfPairsOfCards: Int, allThemeEmoji: [String], cardContentFactory: (Int) -> CardContent) {
+    init(numberOfPairsOfCards: Int, numThemeEmoji: Int, cardContentFactory: (Int) -> CardContent) {
         cards = []
         
         // randomly select cards from all emoji for the theme
-        let indices = Array((0..<max(2,allThemeEmoji.count)).shuffled().prefix(numberOfPairsOfCards))
+        let indices = Array((0..<max(2,numThemeEmoji)).shuffled().prefix(numberOfPairsOfCards))
         
         // add 2*numberOfPairsOfCards
         for pairIndex in indices {
@@ -84,7 +84,7 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
         var isSeen = false // whether the card has been previously seen
         let content: CardContent
         
-        var id: String
+        let id: String
         
     }
     
