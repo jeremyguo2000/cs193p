@@ -7,16 +7,8 @@
 
 import SwiftUI
 
-// TODO: create all the cards here
-
-// 4 features (symbol, number, shading, color), represent with enum --> 3^4 cards
-// symbols: diamond, rectangle (squiggle), oval
-// number: 1-3
-// shading: empty, striped, fill
-// color: green, blue, pink
-
 enum Symbol: String, CaseIterable {
-    case diamond
+    case diamond // TODO: for now, represent this as a triangle
     case rectangle
     case oval
 }
@@ -67,7 +59,7 @@ class SetViewModel: ObservableObject {
 
     // deal 3 more cards
     func deal() {
-        print("dealing ")
+        model.deal()
     }
 
     func newGame() {
@@ -75,11 +67,16 @@ class SetViewModel: ObservableObject {
         model = SetViewModel.createSetGame()
     }
 
-    func choose() {
-        
+    func choose(_ card: SetGame<CardContent>.Card) {
+        model.choose(card)
     }
-
     
+    // TODO: clicking twice should deselect it UNLESS you have selected 3
+
+    var cards: Array<SetGame<CardContent>.Card> {
+        let numDealt = model.numDealtCards
+        return Array(model.cards.prefix(numDealt))
+    }
     
     
     
