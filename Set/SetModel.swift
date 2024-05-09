@@ -14,6 +14,9 @@ struct SetGame<CardContent> {
     let numStartCards = 12
     let setSize = 3 // num cards in a set
     
+    // TODO: what should be the behavior when cards are matched? should we
+    // put them somewhere else?
+    
     init(cardContentFactory: (Symbol, Shading, NumberOfSymbols, Color) -> CardContent) {
         cards = []
         numDealtCards = numStartCards
@@ -36,8 +39,6 @@ struct SetGame<CardContent> {
         
         print(cards)
         print(cards.count)
-        
-        // TODO: need to shuffle the order of the cards when u first create a new game
         
     }
     

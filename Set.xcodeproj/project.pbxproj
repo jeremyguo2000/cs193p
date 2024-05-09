@@ -13,6 +13,8 @@
 		1430A3642BE8D3F200226A39 /* SetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1430A3632BE8D3F200226A39 /* SetModel.swift */; };
 		1430A3662BE8D43A00226A39 /* SetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1430A3652BE8D43A00226A39 /* SetViewModel.swift */; };
 		1430A3682BE8D45900226A39 /* SetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1430A3672BE8D45900226A39 /* SetView.swift */; };
+		14E1479F2BEC5BC6004A5A7E /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E1479E2BEC5BC6004A5A7E /* CardView.swift */; };
+		14E147A12BEC6010004A5A7E /* Diamond.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E147A02BEC6010004A5A7E /* Diamond.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +25,8 @@
 		1430A3632BE8D3F200226A39 /* SetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetModel.swift; sourceTree = "<group>"; };
 		1430A3652BE8D43A00226A39 /* SetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetViewModel.swift; sourceTree = "<group>"; };
 		1430A3672BE8D45900226A39 /* SetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetView.swift; sourceTree = "<group>"; };
+		14E1479E2BEC5BC6004A5A7E /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		14E147A02BEC6010004A5A7E /* Diamond.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Diamond.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +62,8 @@
 				1430A3632BE8D3F200226A39 /* SetModel.swift */,
 				1430A3652BE8D43A00226A39 /* SetViewModel.swift */,
 				1430A3672BE8D45900226A39 /* SetView.swift */,
+				14E1479E2BEC5BC6004A5A7E /* CardView.swift */,
+				14E147A02BEC6010004A5A7E /* Diamond.swift */,
 				1430A3532BE8CEE200226A39 /* SetApp.swift */,
 				1430A3572BE8CEE600226A39 /* Assets.xcassets */,
 				1430A3592BE8CEE600226A39 /* Preview Content */,
@@ -143,10 +149,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14E147A12BEC6010004A5A7E /* Diamond.swift in Sources */,
 				1430A3662BE8D43A00226A39 /* SetViewModel.swift in Sources */,
 				1430A3642BE8D3F200226A39 /* SetModel.swift in Sources */,
 				1430A3682BE8D45900226A39 /* SetView.swift in Sources */,
 				1430A3542BE8CEE200226A39 /* SetApp.swift in Sources */,
+				14E1479F2BEC5BC6004A5A7E /* CardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

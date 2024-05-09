@@ -52,34 +52,6 @@ struct rectView: View {
     }
 }
 
-// TODO: create some enum for the card builder
-// TODO: rename
-// symbol, shading, numSymbols, color
-// triangle, rectangle, oval
-func cardViewBuilder(_ card: SetGame<CardContent>.Card) {
-    
-}
-
-struct CardView: View {
-    let card: SetGame<CardContent>.Card
-    
-    init(_ card: SetGame<CardContent>.Card) {
-        self.card = card
-    }
-
-    var body: some View {
-        VStack {
-            Text(card.id)
-        }.border(.black).padding(5)
-            .overlay(card.isSelected ? .blue.opacity(0.5) : .blue.opacity(0))
-    }
-    
-    
-}
-
-
-
-
 #Preview {
     SetView(viewModel: SetViewModel())
 }
