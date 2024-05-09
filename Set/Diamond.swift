@@ -21,9 +21,9 @@ struct Diamond: Shape {
     
 }
 
-// TODO: tidy this
-let W = CGFloat(90)
-let H = CGFloat(45)
+// TODO: tidy this shit, don't hardcode, make adaptive
+let W = CGFloat(40)
+let H = CGFloat(20)
 
 // TODO: use a Grid
 
