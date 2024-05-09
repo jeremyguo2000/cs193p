@@ -18,7 +18,6 @@ struct SetView: View {
                 cards
             }
             Spacer()
-            rectView()
             Button("Deal") {
                 viewModel.deal()
             }
@@ -40,15 +39,6 @@ struct SetView: View {
                     }
             }
         }
-    }
-}
-
-// TODO: return a view for your shape
-struct rectView: View {
-    var body: some View {
-        Rectangle()
-            .frame(width: 100, height: 100)
-            .border(.black)
     }
 }
 

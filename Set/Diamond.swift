@@ -15,7 +15,7 @@ struct Diamond: Shape {
         p.addLine(to: CGPoint(x: rect.maxX, y: rect.midY))
         p.addLine(to: CGPoint(x: rect.midX, y: rect.minY))
         p.addLine(to: CGPoint(x: rect.minX, y: rect.midY))
-        
+        p.addLine(to: CGPoint(x: rect.midX, y: rect.maxY))
         return p
     }
     
@@ -33,19 +33,19 @@ struct Diamond_Previews: PreviewProvider {
             HStack() {
                 VStack() {
                     Diamond()
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                        .stroke(.blue)
                         .frame(width:W, height: H)
                     Diamond()
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                        .stroke(.blue)
                         .frame(width:W, height: H)
                 }
                 Spacer()
                 Ellipse()
-                    .foregroundColor(.teal)
+                    .stroke(.teal)
                     .frame(width:W, height: H)
                 Spacer()
                 Rectangle()
-                    .foregroundColor(.orange)
+                    .stroke(.orange)
                     .frame(width:W, height: H)
                 
             }.padding(10)
