@@ -17,14 +17,14 @@ struct SetGame<CardContent> {
     // TODO: what should be the behavior when cards are matched? should we
     // put them somewhere else?
     
-    init(cardContentFactory: (Symbol, Shading, NumberOfSymbols, Color) -> CardContent) {
+    init(cardContentFactory: (Symbol, Shading, NumberOfSymbols, ElemColor) -> CardContent) {
         cards = []
         numDealtCards = numStartCards
         
         for symbol in Symbol.allCases {
             for shading in Shading.allCases {
                 for numberOfSymbols in NumberOfSymbols.allCases {
-                    for color in Color.allCases {
+                    for color in ElemColor.allCases {
                         let content = cardContentFactory(symbol, shading, numberOfSymbols, color)
                         let id =  "\(symbol.rawValue.prefix(2))_\(shading.rawValue.prefix(3))_\(numberOfSymbols.rawValue.prefix(3))_\(color.rawValue.prefix(2))"
                         let card = Card(content: content, id: id)

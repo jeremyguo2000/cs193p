@@ -36,7 +36,7 @@ enum NumberOfSymbols: String, CaseIterable {
     }
 }
 
-enum Color: String, CaseIterable {
+enum ElemColor: String, CaseIterable {
     case blue
     case yellow
     case purple
@@ -46,7 +46,7 @@ struct CardContent {
     let symbol: Symbol
     let shading: Shading
     let numberOfSymbols: NumberOfSymbols
-    let color: Color
+    let color: ElemColor
 }
 
 // deal 12 cards (at any point in time, there should always be 12 cards)

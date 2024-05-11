@@ -39,6 +39,7 @@ struct CardView: View {
                     
                     // same as top, but better
                     getShape(symbol: card.content.symbol)
+                        .applyColor(desiredColor: card.content.color)
                         .duplicate(count: card.content.numberOfSymbols.getNumSymbols())
                     
                     // TODO: fix this shit
@@ -74,18 +75,31 @@ struct DuplicateModifier: ViewModifier {
     }
 }
 
-
 extension View {
     func duplicate(count: Int) -> some View {
         modifier(DuplicateModifier(count: count))
     }
+    
+    func applyColor(desiredColor: ElemColor) -> some View {
+        modifier(ColorModifier(desiredColor: desiredColor))
+    }
 }
 
 struct ColorModifier: ViewModifier {
-    var color: SwiftUI.Color
+    var desiredColor: ElemColor
     
     func body(content: Content) -> some View {
-        content.foregroundColor(color)
+        
+        let outputColor = switch (desiredColor) {
+            case .blue:
+                SwiftUI.Color.blue
+            case .yellow:
+                SwiftUI.Color.yellow
+            case .purple:
+                SwiftUI.Color.purple
+        }
+        
+        return content.foregroundColor(outputColor)
         // content.border(color)
         
     }
@@ -100,7 +114,7 @@ func applyColor(to shape: some Shape) -> some View {
 }
 
 // TODO: why is this shit not working
-func getShape(symbol: Symbol) -> Text {
+func getShape(symbol: Symbol) -> some View {
     switch symbol {
         case .diamond:
             Text("diamond")
@@ -166,6 +180,8 @@ struct CardView_Previews:  PreviewProvider {
                 
             
             CardView(SetGame<CardContent>.Card(content: CardContent(symbol: .diamond, shading: .fill, numberOfSymbols: .ONE, color: .blue), id: "test"))
+            
+            
             
         }
        
