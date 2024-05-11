@@ -7,9 +7,7 @@
 
 import SwiftUI
 
-// TODO: turn the cardify into a ViewModifier
-// TODO: turn all the shit into viewModifiers
-// Extension + ViewModifier??
+// TODO: revise what a ViewBuilder is
 
 struct CardView: View {
     let card: SetGame<CardContent>.Card
@@ -18,7 +16,6 @@ struct CardView: View {
     init(_ card: SetGame<CardContent>.Card) {
         self.card = card
     }
-    
     
     // TODO: factor out your magic constants and shit
     // TODO: adaptive sizing of cards
@@ -30,29 +27,42 @@ struct CardView: View {
             Group {
                 base.fill(.white).strokeBorder(lineWidth: 2)
                 VStack {
-                    // Text(card.id)
-                    //applyCount(to: Diamond(), count: card.content.numberOfSymbols.getNumSymbols())
-                    
-                    // Rectangle()                    //getShape(card.content.symbol)
-                    //getShape(symbol: card.content.symbol)
-                    //    .modifier(DuplicateModifier(count: card.content.numberOfSymbols.getNumSymbols()))
-                    
-                    // same as top, but better
-                    getShape(symbol: card.content.symbol)
-                        .applyColor(desiredColor: card.content.color)
-                        .duplicate(count: card.content.numberOfSymbols.getNumSymbols())
-                    
-                    // TODO: fix this shit
-                    // applyColor(to: Circle())
-                    //Circle()
-                        // .modifier(ColorModifier(color: .red))
-                        //.modifier(ColorModifier(color: .green))
-                    
+                    buildShape(card: card)
                 }
             }
         }.overlay(card.isSelected ? .blue.opacity(0.3) : .blue.opacity(0))
     }
+}
+
+// builds a shape based on the card
+// TODO: why do i need this goddamn AnyShape
+// TODO: use generics??
+func buildShape(card: SetGame<CardContent>.Card) -> some View {
+        
+    let finalView = switch(card.content.symbol) {
+    case .diamond:
+        AnyShape(Diamond())
+            .applyColor(desiredColor: card.content.color)
+            .duplicate(count: card.content.numberOfSymbols.getNumSymbols())
+        //Diamond()
+    case .oval:
+        AnyShape(Ellipse())
+            .applyColor(desiredColor: card.content.color)
+            .duplicate(count: card.content.numberOfSymbols.getNumSymbols())
+        //Ellipse()
+    case .rectangle:
+        AnyShape(Rectangle())
+            .applyColor(desiredColor: card.content.color)
+            .duplicate(count: card.content.numberOfSymbols.getNumSymbols())
     }
+    
+    // TODO: magic constant
+    // TODO: if there's only one shape it should not expand
+    return finalView.padding(8)
+        
+}
+    
+
 
 
 // TODO: use viewModifier? is this necessary?
@@ -83,8 +93,11 @@ extension View {
     func applyColor(desiredColor: ElemColor) -> some View {
         modifier(ColorModifier(desiredColor: desiredColor))
     }
+    
+    // TODO: shading chooser
 }
 
+// TODO: very messy with all these colors and shit
 struct ColorModifier: ViewModifier {
     var desiredColor: ElemColor
     
@@ -110,18 +123,6 @@ func applyColor(to shape: some Shape) -> some View {
     ZStack {
         shape.fill(.red)
         shape.stroke(.red)
-    }
-}
-
-// TODO: why is this shit not working
-func getShape(symbol: Symbol) -> some View {
-    switch symbol {
-        case .diamond:
-            Text("diamond")
-        case .oval:
-            Text("oval")
-        case .rectangle:
-            Text("rect")
     }
 }
 
