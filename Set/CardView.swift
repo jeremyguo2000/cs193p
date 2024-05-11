@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+// TODO: turn the cardify into a ViewModifier
+// TODO: turn all the shit into viewModifiers
+// Extension + ViewModifier??
+
 struct CardView: View {
     let card: SetGame<CardContent>.Card
     
@@ -26,11 +30,22 @@ struct CardView: View {
             Group {
                 base.fill(.white).strokeBorder(lineWidth: 2)
                 VStack {
-                    // TODO Text(card.id)
-                    applyCount(to: Diamond(), count: card.content.numberOfSymbols.getNumSymbols())
+                    // Text(card.id)
+                    //applyCount(to: Diamond(), count: card.content.numberOfSymbols.getNumSymbols())
+                    
+                    // Rectangle()                    //getShape(card.content.symbol)
+                    //getShape(symbol: card.content.symbol)
+                    //    .modifier(DuplicateModifier(count: card.content.numberOfSymbols.getNumSymbols()))
+                    
+                    // same as top, but better
+                    getShape(symbol: card.content.symbol)
+                        .duplicate(count: card.content.numberOfSymbols.getNumSymbols())
                     
                     // TODO: fix this shit
-                    applyColor(to: applyColor(to: Circle()))
+                    // applyColor(to: Circle())
+                    //Circle()
+                        // .modifier(ColorModifier(color: .red))
+                        //.modifier(ColorModifier(color: .green))
                     
                 }
             }
@@ -38,13 +53,63 @@ struct CardView: View {
     }
     }
 
-// TODO: this doesn't seem to work well with other functions
-// ZZZZZ
-func applyColor(to shape: some Shape) -> some Shape {
-    shape.stroke(.red, lineWidth: 2)
-    return shape
+
+// TODO: use viewModifier? is this necessary?
+struct Cardify: ViewModifier {
+    
+    // TODO: turn that shit into a card
+    func body(content: Content) -> some View {
+        
+    }
+    
 }
 
+struct DuplicateModifier: ViewModifier {
+    let count: Int
+    
+    func body(content: Content) -> some View {
+        ForEach(0..<count, id: \.self) {_ in
+            content
+        }
+    }
+}
+
+
+extension View {
+    func duplicate(count: Int) -> some View {
+        modifier(DuplicateModifier(count: count))
+    }
+}
+
+struct ColorModifier: ViewModifier {
+    var color: SwiftUI.Color
+    
+    func body(content: Content) -> some View {
+        content.foregroundColor(color)
+        // content.border(color)
+        
+    }
+}
+
+// TODO: this doesn't seem to work well with other functions
+func applyColor(to shape: some Shape) -> some View {
+    ZStack {
+        shape.fill(.red)
+        shape.stroke(.red)
+    }
+}
+
+// TODO: why is this shit not working
+func getShape(symbol: Symbol) -> Text {
+    switch symbol {
+        case .diamond:
+            Text("diamond")
+        case .oval:
+            Text("oval")
+        case .rectangle:
+            Text("rect")
+    }
+}
 
 func applyShading(to shape: some Shape, shading: Shading) -> some View {
     
@@ -56,6 +121,7 @@ func applyShading(to shape: some Shape, shading: Shading) -> some View {
     
 }
 
+// TODO: i think do this last since this is after the shape modification
 func applyCount(to shape: some Shape, count: Int) -> some View {
     return
         ForEach(0..<count, id: \.self, content: { _ in
@@ -66,9 +132,14 @@ func applyCount(to shape: some Shape, count: Int) -> some View {
 
 // TODO: create some enum for the card builder
 // TODO: rename, is this the right func signature?
-// symbol, shading, numSymbols, color
+// symbol,  numSymbols, color, shading, --> color, shading, symbol group together
 // diamond, rectangle, oval
 // build a cardview for the card
+
+// flow is like this
+// choose symbol --> color, shading --> multiply
+
+// TODO: look at ViewModifier, i believe that's the correct approach
 
 extension Shape {
     
