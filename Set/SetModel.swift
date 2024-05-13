@@ -157,7 +157,9 @@ struct SetGame<CardContent> {
     
     
     // struct for card
-    // you manipulate cards here, but you don't need to care about the view
+    // you manipulate cards here, but you don't need to care about the view?
+    // TODO: where should the data be?
+    //  maybe it should be called a1, a2, a3, a4 for attributes?
     struct Card: Identifiable, CustomDebugStringConvertible {
         var debugDescription: String {
             return "\(id)"
@@ -217,3 +219,5 @@ struct CardContent {
     let numberOfSymbols: NumberOfSymbols
     let color: ElemColor
 }
+
+// TODO: figure out where to put the shit where
