@@ -43,10 +43,10 @@ class SetViewModel: ObservableObject {
         model.choose(card)
     }
     
-    func isValidSet() -> SetGame<CardContent>.chosenCardsState {
+    func getSetStatus() -> SetGame<CardContent>.chosenCardsState {
         // TODO: the model should be telling the shading
         // red? green? blue?
-        return model.isSet()
+        return model.curSetStatus
     }
 
     var cards: Array<SetGame<CardContent>.Card> {

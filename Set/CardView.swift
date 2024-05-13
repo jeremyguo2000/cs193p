@@ -17,10 +17,7 @@ import SwiftUI
 
 struct CardView: View {
     let card: SetGame<CardContent>.Card
-    
-    init(_ card: SetGame<CardContent>.Card) {
-        self.card = card
-    }
+    @ObservedObject var viewModel: SetViewModel
     
     var body: some View {
         ZStack (alignment: .center) {
@@ -31,15 +28,21 @@ struct CardView: View {
                     getViewFromCard(card)
                 }
             }
-        }.overlay(card.isSelected ? .blue.opacity(0.3) : .blue.opacity(0))
-        // TODO: overlay has to change color when 3 are selected --> where is this info passed in?
-        // --> GREEN for a match
-        // --> RED for a mismatch
-        // TODO: remove the cards
+        }.overlay(getSelectionOverlay().opacity(card.isSelected ? 0.5 : 0))
     }
     
     func getSelectionOverlay() -> SwiftUI.Color {
-        return .blue.opacity(0.3)
+        
+        switch(viewModel.getSetStatus()) {
+        case .too_few:
+            return Color.blue
+        case .invalid:
+            return Color.red
+        case .valid:
+            return Color.green
+        }
+            
+
     }
     
     

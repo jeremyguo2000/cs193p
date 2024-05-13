@@ -12,6 +12,7 @@ struct SetGame<CardContent> {
     private(set) var cards: Array<Card>
     private(set) var numDealtCards: Int
     private(set) var numChosenCards: Int
+    private(set) var curSetStatus: chosenCardsState
     
     let numStartCards = 12
     let setSize = 3 // num cards in a set
@@ -24,6 +25,7 @@ struct SetGame<CardContent> {
         cards = []
         numDealtCards = numStartCards
         numChosenCards = 0
+        curSetStatus = .too_few
         
         for symbol in Symbol.allCases {
             for shading in Shading.allCases {
@@ -73,11 +75,13 @@ struct SetGame<CardContent> {
                 
                 // TODO: if u have selected 3, the highlights of the card should change
                 // TODO: should be a computed property
-                // var isValidSet = isSet()
+                isSet()
                 
             } else {
+                // TODO: once you hit 3, should not be able to deselect
                 // TODO: this determines if the card is removed (if it's valid)
                 deselectAllCards()
+                // TODO: you need to select the card that was clicked here
             }
             
         }
@@ -91,15 +95,15 @@ struct SetGame<CardContent> {
     }
     
     // checks if the current set of cards is a set
-    // this will also determine the shading?
-    func isSet() -> chosenCardsState {
+    mutating func isSet() -> Void {
         print("checking for set")
         
         // TODO: there are 3 states of the game
         //     1. < 3 cards selected, 2. a valid set is formed 3. an invalid set is formed
         
         if numChosenCards < setSize {
-            return chosenCardsState.too_few
+            curSetStatus = chosenCardsState.too_few
+            return
         }
         
         // check that for each feature, either all are same or all are different
@@ -117,7 +121,7 @@ struct SetGame<CardContent> {
         // all same
         // all different
         
-        return chosenCardsState.valid
+        curSetStatus = chosenCardsState.valid
         
     }
     
@@ -166,6 +170,7 @@ struct SetGame<CardContent> {
         }
         
         var isSelected = false
+        // maybe this could be a picture or some shit that doesn't affect the gameplay and it's less impt to access it?
         let content: CardContent
         let id: String
         let symbol: Symbol
