@@ -48,7 +48,7 @@ struct CardView: View {
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
     @ViewBuilder
     func getViewFromCard(_ card: SetGame<CardContent>.Card) -> some View {
-        let shape = switch(card.content.symbol) {
+        let shape = switch(card.symbol) {
         case .diamond:
             AnyShape(Diamond())
             //Diamond()
@@ -66,12 +66,12 @@ struct CardView: View {
         shape
             .stroke(shapeColor, lineWidth: 3)
             .overlay(shape.fill(shapeColor.opacity(shapeOpacity)))
-            .duplicate(count: card.content.numberOfSymbols.getNumSymbols())
+            .duplicate(count: card.numSymbols.getNumSymbols())
             .padding(8)
     }
     
     func getColor(_ card: SetGame<CardContent>.Card) -> SwiftUI.Color {
-        switch (card.content.color) {
+        switch (card.elemColor) {
         case .blue:
             SwiftUI.Color.blue
         case .yellow:
@@ -83,7 +83,7 @@ struct CardView: View {
     
     // TODO: should this be in the viewModel?
     func getShading(_ card: SetGame<CardContent>.Card) -> Double {
-        switch (card.content.shading) {
+        switch (card.shading) {
         case .empty:
             0
         case .stripe:
@@ -113,7 +113,7 @@ struct CardView_Previews:  PreviewProvider {
     static var previews: some View {
     
         HStack {
-            CardView(SetGame<CardContent>.Card(content: CardContent(symbol: .diamond, shading: .empty, numberOfSymbols: .ONE, color: .blue), id: "test"))
+            //CardView(SetGame<CardContent>.Card(content: CardContent(symbol: .diamond, shading: .empty, numberOfSymbols: .ONE, color: .blue), id: "test", test:"f"))
             
             ZStack {
                 AnyShape(Rectangle())

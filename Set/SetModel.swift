@@ -31,7 +31,8 @@ struct SetGame<CardContent> {
                     for color in ElemColor.allCases {
                         let content = cardContentFactory(symbol, shading, numberOfSymbols, color)
                         let id =  "\(symbol.rawValue.prefix(2))_\(shading.rawValue.prefix(3))_\(numberOfSymbols.rawValue.prefix(3))_\(color.rawValue.prefix(2))"
-                        let card = Card(content: content, id: id)
+                        let card = Card(content: content, id: id, symbol: symbol,
+                                        shading: shading, numSymbols: numberOfSymbols, elemColor: color)
                         cards.append(card)
                     }
                 }
@@ -126,6 +127,7 @@ struct SetGame<CardContent> {
         
         // for c in T.allCases {}
         // let card_1 = cards[cardIdxs[0]].
+        // let card_1 = cards[cardIdxs[0]]
         
         return true
     }
@@ -164,8 +166,54 @@ struct SetGame<CardContent> {
         var isSelected = false
         let content: CardContent
         let id: String
+        let symbol: Symbol
+        let shading: Shading
+        let numSymbols: NumberOfSymbols
+        let elemColor: ElemColor
     }
     
 
     
+}
+
+enum Symbol: String, CaseIterable {
+    case diamond // TODO: for now, represent this as a triangle
+    case rectangle
+    case oval
+}
+
+enum Shading: String, CaseIterable {
+    case empty
+    case stripe // can use semi-transparent instead
+    case fill
+}
+
+enum NumberOfSymbols: String, CaseIterable {
+    case ONE
+    case TWO
+    case THREE
+    
+    func getNumSymbols() -> Int {
+        switch self {
+            case .ONE:
+                return 1
+            case .TWO:
+                return 2
+            case .THREE:
+                return 3
+        }
+    }
+}
+
+enum ElemColor: String, CaseIterable {
+    case blue
+    case yellow
+    case purple
+}
+
+struct CardContent {
+    let symbol: Symbol
+    let shading: Shading
+    let numberOfSymbols: NumberOfSymbols
+    let color: ElemColor
 }
