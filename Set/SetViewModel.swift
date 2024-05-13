@@ -82,12 +82,18 @@ class SetViewModel: ObservableObject {
         model.choose(card)
     }
     
-    // TODO: clicking twice should deselect it UNLESS you have selected 3
+    func isValidSet() -> SetGame<CardContent>.chosenCardsState {
+        // TODO: the model should be telling the shading
+        // red? green? blue?
+        return model.isSet()
+    }
 
     var cards: Array<SetGame<CardContent>.Card> {
         let numDealt = model.numDealtCards
         return Array(model.cards.prefix(numDealt))
     }
+    
+
     
     
     

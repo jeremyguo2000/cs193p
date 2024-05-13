@@ -13,6 +13,7 @@ import SwiftUI
 // TODO: GeometryReader to figure out the card's aspect ratio
 // TODO: should shapes expand to take up all available space?
 //       or should they always take up the same space
+// TODO: AspectVGrid??
 
 struct CardView: View {
     let card: SetGame<CardContent>.Card
@@ -31,6 +32,14 @@ struct CardView: View {
                 }
             }
         }.overlay(card.isSelected ? .blue.opacity(0.3) : .blue.opacity(0))
+        // TODO: overlay has to change color when 3 are selected --> where is this info passed in?
+        // --> GREEN for a match
+        // --> RED for a mismatch
+        // TODO: remove the cards
+    }
+    
+    func getSelectionOverlay() -> SwiftUI.Color {
+        return .blue.opacity(0.3)
     }
     
     
@@ -72,6 +81,7 @@ struct CardView: View {
         }
     }
     
+    // TODO: should this be in the viewModel?
     func getShading(_ card: SetGame<CardContent>.Card) -> Double {
         switch (card.content.shading) {
         case .empty:
