@@ -59,6 +59,7 @@ class SetViewModel: ObservableObject {
     private static func createSetGame() -> SetGame<CardContent> {
         return SetGame() {symbol, shading, numberOfSymbols, color in
             // this is the closure
+            // TODO: why is it such a dumbass way of doing i can't access shit
             return CardContent(symbol: symbol, shading: shading, numberOfSymbols: numberOfSymbols, color: color)
         }
     }

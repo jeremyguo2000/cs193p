@@ -112,11 +112,22 @@ struct SetGame<CardContent> {
             }
         }
         
-        
-
+        // TODO: helper functions
+        // all same
+        // all different
         
         return chosenCardsState.valid
         
+    }
+    
+    // TODO: make this a generic
+    // T could be e.g. color
+    func allSame<T: CaseIterable>(_ cardIdxs : [Int], _ curEnum : T) -> Bool {
+        
+        // for c in T.allCases {}
+        // let card_1 = cards[cardIdxs[0]].
+        
+        return true
     }
     
     mutating func deselectAllCards() {
