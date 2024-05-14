@@ -49,10 +49,6 @@ struct SetGame<CardContent> {
         
     }
     
-    // TODO:  different selection states
-    // blue -> selected, green -> 3 things form a set, red -> 3 things do not form a set
- 
-    
     // func for selecting cards
     mutating func choose(_ card: Card) {
         print("chose \(card)")
@@ -64,21 +60,24 @@ struct SetGame<CardContent> {
         let chosenIndex = cards.firstIndex(where: {$0.id == card.id})
         print("In choose, chosenIndex \(String(describing: chosenIndex))")
         
-        
         if cards[chosenIndex!].isSelected {
-            cards[chosenIndex!].isSelected = false
             
-            // TODO: check this shit logic
-            let copyOfChosenIdxs = chosenCardIdxs
-            chosenCardIdxs.removeAll { idx in
-                print("removing idx is \(idx)")
-                return cards[chosenIndex!].id == cards[copyOfChosenIdxs[idx]].id
+            if numChosenCards < setSize {
+                cards[chosenIndex!].isSelected = false
+                
+                let copyOfChosenIdxs = chosenCardIdxs
+                chosenCardIdxs.removeAll { idx in
+                    print("removing idx is \(idx)")
+                    return cards[chosenIndex!].id == cards[idx].id
+                }
+            
+                numChosenCards = max(0, numChosenCards - 1)
+                print("all chosen indices \(chosenCardIdxs)")
+            } else {
+                //  should not be able to do anything when u hit 3
+                deselectAllCards()
             }
-            
-            
-            numChosenCards = max(0, numChosenCards - 1)
-            print("all chosen indices \(chosenCardIdxs)")
-            
+ 
         } else {
             cards[chosenIndex!].isSelected = true
             if numChosenCards < setSize { // 0, 1 cards selected
@@ -90,10 +89,7 @@ struct SetGame<CardContent> {
                     isSet()
                 }
                 
-                
             } else {
-                // TODO: once you hit 3, should not be able to deselect
-                // TODO: this determines if the card is removed (if it's valid)
                 deselectAllCards()
                 // TODO: you need to select the card that was clicked here
             }
@@ -142,10 +138,7 @@ struct SetGame<CardContent> {
         
         curSetStatus = (symbolCheck && shadingCheck && numCheck && colorCheck) ? chosenCardsState.valid : chosenCardsState.invalid
         
-        print("checking... ")
         print("chosenIdxs \(chosenCardIdxs)")
-        
-       
         print("curSetStatus is \(curSetStatus)")
     }
     
@@ -185,6 +178,7 @@ struct SetGame<CardContent> {
         }
         numChosenCards = 0
         chosenCardIdxs = [] // TODO: check if anything else
+        curSetStatus = .too_few
     }
     
     // func for dealing
