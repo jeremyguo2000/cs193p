@@ -73,8 +73,6 @@ struct SetGame<CardContent> {
             if numChosenCards < setSize { // 0, 1 cards selected
                 numChosenCards += 1
                 
-                // TODO: if u have selected 3, the highlights of the card should change
-                // TODO: should be a computed property
                 isSet()
                 
             } else {
@@ -97,18 +95,12 @@ struct SetGame<CardContent> {
     // checks if the current set of cards is a set
     mutating func isSet() -> Void {
         print("checking for set")
-        
-        // TODO: there are 3 states of the game
-        //     1. < 3 cards selected, 2. a valid set is formed 3. an invalid set is formed
-        
+    
         if numChosenCards < setSize {
             curSetStatus = chosenCardsState.too_few
             return
         }
-        
-        // check that for each feature, either all are same or all are different
-        // symbol shading, number, color
-        
+    
         // track the indices of the cards that were chosen
         var chosenCardIdxs = [Int]()
         for idx in cards.indices {
@@ -120,21 +112,48 @@ struct SetGame<CardContent> {
         // TODO: helper functions
         // all same
         // all different
+        // symbol shading, number, color
         
-        curSetStatus = chosenCardsState.valid
+        // TODO: use your allSameOrDifferent function here
+        let symbolCheck = allSameOrDifferent(chosenCardIdxs) { idx in
+            cards[chosenCardIdxs[idx]].symbol
+        }
+        let shadingCheck = allSameOrDifferent(chosenCardIdxs) { idx in
+            cards[chosenCardIdxs[idx]].shading
+        }
+        let numCheck = allSameOrDifferent(chosenCardIdxs) { idx in
+            cards[chosenCardIdxs[idx]].numSymbols
+        }
+        let colorCheck = allSameOrDifferent(chosenCardIdxs) { idx in
+            cards[chosenCardIdxs[idx]].elemColor
+        }
+        
+        
+        curSetStatus = symbolCheck && shadingCheck && numCheck && colorCheck ? chosenCardsState.valid : chosenCardsState.invalid
+        
+        // TODO: you will have to reset the set later
+        
         
     }
     
-    // TODO: make this a generic
-    // T could be e.g. color
-    func allSame<T: CaseIterable>(_ cardIdxs : [Int], _ curEnum : T) -> Bool {
+    // the closure is the function that tells you which field to extract from the card
+    // we use generic since maybe the card properties could be Int or String
+    // works for any set size, not just 3
+    // written by chatgpt
+    func allSameOrDifferent<U: Equatable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
         
-        // for c in T.allCases {}
-        // let card_1 = cards[cardIdxs[0]].
-        // let card_1 = cards[cardIdxs[0]]
+        let firstVal = property(0)
+        let allSame = chosenCardIdxs.allSatisfy { idx in
+            property(idx) == firstVal
+        }
+        let allDiff = chosenCardIdxs.map { idx in
+            property(idx)
+        }.count == chosenCardIdxs.count
         
-        return true
+        return allSame || allDiff
     }
+    
+
     
     mutating func deselectAllCards() {
         print("deselect all cards")
@@ -184,7 +203,7 @@ struct SetGame<CardContent> {
 }
 
 enum Symbol: String, CaseIterable {
-    case diamond // TODO: for now, represent this as a triangle
+    case diamond 
     case rectangle
     case oval
 }
@@ -218,7 +237,7 @@ enum ElemColor: String, CaseIterable {
     case purple
 }
 
-struct CardContent {
+struct CardProperties {
     let symbol: Symbol
     let shading: Shading
     let numberOfSymbols: NumberOfSymbols

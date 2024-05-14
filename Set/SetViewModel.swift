@@ -14,13 +14,13 @@ import SwiftUI
 
 class SetViewModel: ObservableObject {
     
-    @Published private var model: SetGame<CardContent>
+    @Published private var model: SetGame<CardProperties>
     
-    private static func createSetGame() -> SetGame<CardContent> {
+    private static func createSetGame() -> SetGame<CardProperties> {
         return SetGame() {symbol, shading, numberOfSymbols, color in
             // this is the closure
             // TODO: why is it such a dumbass way of doing i can't access shit
-            return CardContent(symbol: symbol, shading: shading, numberOfSymbols: numberOfSymbols, color: color)
+            return CardProperties(symbol: symbol, shading: shading, numberOfSymbols: numberOfSymbols, color: color)
         }
     }
     
@@ -39,17 +39,17 @@ class SetViewModel: ObservableObject {
         model = SetViewModel.createSetGame()
     }
 
-    func choose(_ card: SetGame<CardContent>.Card) {
+    func choose(_ card: SetGame<CardProperties>.Card) {
         model.choose(card)
     }
     
-    func getSetStatus() -> SetGame<CardContent>.chosenCardsState {
+    func getSetStatus() -> SetGame<CardProperties>.chosenCardsState {
         // TODO: the model should be telling the shading
         // red? green? blue?
         return model.curSetStatus
     }
 
-    var cards: Array<SetGame<CardContent>.Card> {
+    var cards: Array<SetGame<CardProperties>.Card> {
         let numDealt = model.numDealtCards
         return Array(model.cards.prefix(numDealt))
     }

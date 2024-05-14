@@ -16,7 +16,7 @@ import SwiftUI
 // TODO: AspectVGrid??
 
 struct CardView: View {
-    let card: SetGame<CardContent>.Card
+    let card: SetGame<CardProperties>.Card
     @ObservedObject var viewModel: SetViewModel
     
     var body: some View {
@@ -50,7 +50,7 @@ struct CardView: View {
     // TODO: use generics??
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
     @ViewBuilder
-    func getViewFromCard(_ card: SetGame<CardContent>.Card) -> some View {
+    func getViewFromCard(_ card: SetGame<CardProperties>.Card) -> some View {
         let shape = switch(card.symbol) {
         case .diamond:
             AnyShape(Diamond())
@@ -73,7 +73,7 @@ struct CardView: View {
             .padding(8)
     }
     
-    func getColor(_ card: SetGame<CardContent>.Card) -> SwiftUI.Color {
+    func getColor(_ card: SetGame<CardProperties>.Card) -> SwiftUI.Color {
         switch (card.elemColor) {
         case .blue:
             SwiftUI.Color.blue
@@ -85,7 +85,7 @@ struct CardView: View {
     }
     
     // TODO: should this be in the viewModel?
-    func getShading(_ card: SetGame<CardContent>.Card) -> Double {
+    func getShading(_ card: SetGame<CardProperties>.Card) -> Double {
         switch (card.shading) {
         case .empty:
             0
