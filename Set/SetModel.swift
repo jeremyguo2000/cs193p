@@ -7,12 +7,15 @@
 
 import Foundation
 
+// TODO: deselect the shit properly you need to reset the count
+
 struct SetGame<CardContent> {
     
     private(set) var cards: Array<Card>
     private(set) var numDealtCards: Int
-    private(set) var numChosenCards: Int
+    private(set) var numChosenCards: Int // TODO: merge this into the other variable
     private(set) var curSetStatus: chosenCardsState
+    private(set) var chosenCardIdxs: [Int]
     
     let numStartCards = 12
     let setSize = 3 // num cards in a set
@@ -23,6 +26,7 @@ struct SetGame<CardContent> {
     
     init(cardContentFactory: (Symbol, Shading, NumberOfSymbols, ElemColor) -> CardContent) {
         cards = []
+        chosenCardIdxs = []
         numDealtCards = numStartCards
         numChosenCards = 0
         curSetStatus = .too_few
@@ -32,7 +36,7 @@ struct SetGame<CardContent> {
                 for numberOfSymbols in NumberOfSymbols.allCases {
                     for color in ElemColor.allCases {
                         let content = cardContentFactory(symbol, shading, numberOfSymbols, color)
-                        let id =  "\(symbol.rawValue.prefix(2))_\(shading.rawValue.prefix(3))_\(numberOfSymbols.rawValue.prefix(3))_\(color.rawValue.prefix(2))"
+                        let id =  "\(symbol.rawValue.prefix(4))_\(shading.rawValue.prefix(4))_\(numberOfSymbols.rawValue.prefix(4))_\(color.rawValue.prefix(4))"
                         let card = Card(content: content, id: id, symbol: symbol,
                                         shading: shading, numSymbols: numberOfSymbols, elemColor: color)
                         cards.append(card)
@@ -41,17 +45,12 @@ struct SetGame<CardContent> {
             }
         }
         
-        
         cards.shuffle()
-        
-        print(cards)
-        print(cards.count)
         
     }
     
-    // different selection states
+    // TODO:  different selection states
     // blue -> selected, green -> 3 things form a set, red -> 3 things do not form a set
-    // TODO: you need to keep track of how many cards are selected in total
  
     
     // func for selecting cards
@@ -63,17 +62,34 @@ struct SetGame<CardContent> {
         // TODO: i think this is fine for now since the card order might change after match
         // In Swift, structures, enumerations, and tuples are all value types.
         let chosenIndex = cards.firstIndex(where: {$0.id == card.id})
+        print("In choose, chosenIndex \(String(describing: chosenIndex))")
+        
         
         if cards[chosenIndex!].isSelected {
             cards[chosenIndex!].isSelected = false
-            numChosenCards -= 1
+            
+            // TODO: check this shit logic
+            let copyOfChosenIdxs = chosenCardIdxs
+            chosenCardIdxs.removeAll { idx in
+                print("removing idx is \(idx)")
+                return cards[chosenIndex!].id == cards[copyOfChosenIdxs[idx]].id
+            }
+            
+            
+            numChosenCards = max(0, numChosenCards - 1)
+            print("all chosen indices \(chosenCardIdxs)")
             
         } else {
             cards[chosenIndex!].isSelected = true
             if numChosenCards < setSize { // 0, 1 cards selected
+                chosenCardIdxs.append(chosenIndex!)
                 numChosenCards += 1
+                print("all chosen indices \(chosenCardIdxs)")
                 
-                isSet()
+                if (numChosenCards == setSize) {
+                    isSet()
+                }
+                
                 
             } else {
                 // TODO: once you hit 3, should not be able to deselect
@@ -99,25 +115,18 @@ struct SetGame<CardContent> {
         if numChosenCards < setSize {
             curSetStatus = chosenCardsState.too_few
             return
+    
         }
     
-        // track the indices of the cards that were chosen
-        var chosenCardIdxs = [Int]()
-        for idx in cards.indices {
-            if cards[idx].isSelected {
-                chosenCardIdxs.append(idx)
-            }
-        }
-        
-        // TODO: helper functions
-        // all same
-        // all different
-        // symbol shading, number, color
-        
-        // TODO: use your allSameOrDifferent function here
+        // TODO: check your closure shit i think it's buggy
         let symbolCheck = allSameOrDifferent(chosenCardIdxs) { idx in
-            cards[chosenCardIdxs[idx]].symbol
+            cards[idx].symbol
         }
+        let shadingCheck = true
+        let numCheck = true
+        let colorCheck = true
+        
+        /*
         let shadingCheck = allSameOrDifferent(chosenCardIdxs) { idx in
             cards[chosenCardIdxs[idx]].shading
         }
@@ -127,28 +136,32 @@ struct SetGame<CardContent> {
         let colorCheck = allSameOrDifferent(chosenCardIdxs) { idx in
             cards[chosenCardIdxs[idx]].elemColor
         }
+        */
+        curSetStatus = (symbolCheck && shadingCheck && numCheck && colorCheck) ? chosenCardsState.valid : chosenCardsState.invalid
         
-        
-        curSetStatus = symbolCheck && shadingCheck && numCheck && colorCheck ? chosenCardsState.valid : chosenCardsState.invalid
-        
-        // TODO: you will have to reset the set later
-        
-        
+        print("checking... ")
+        print("chosenIdxs \(chosenCardIdxs)")
+        print("symbolCheck is \(symbolCheck)")
+        print("shadingCheck is \(shadingCheck)")
+        print("numCheck is \(numCheck)")
+        print("colorCheck is \(colorCheck)")
+        print("curSetStatus is \(curSetStatus)")
     }
     
     // the closure is the function that tells you which field to extract from the card
     // we use generic since maybe the card properties could be Int or String
     // works for any set size, not just 3
     // written by chatgpt
-    func allSameOrDifferent<U: Equatable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
+    // TODO: this is causing something to crash...
+    func allSameOrDifferent<U: Equatable & Hashable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
         
         let firstVal = property(0)
         let allSame = chosenCardIdxs.allSatisfy { idx in
             property(idx) == firstVal
         }
-        let allDiff = chosenCardIdxs.map { idx in
+        let allDiff = Set(chosenCardIdxs.map { idx in
             property(idx)
-        }.count == chosenCardIdxs.count
+        }).count == chosenCardIdxs.count
         
         return allSame || allDiff
     }
@@ -162,6 +175,7 @@ struct SetGame<CardContent> {
             cards[i].isSelected = false
         }
         numChosenCards = 0
+        chosenCardIdxs = [] // TODO: check if anything else
     }
     
     // func for dealing
@@ -177,12 +191,6 @@ struct SetGame<CardContent> {
         cards.shuffle()
     }
     
-    
-    
-    // struct for card
-    // you manipulate cards here, but you don't need to care about the view?
-    // TODO: where should the data be?
-    //  maybe it should be called a1, a2, a3, a4 for attributes?
     struct Card: Identifiable, CustomDebugStringConvertible {
         var debugDescription: String {
             return "\(id)"
