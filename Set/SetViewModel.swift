@@ -48,6 +48,10 @@ class SetViewModel: ObservableObject {
         // red? green? blue?
         return model.curSetStatus
     }
+    
+    func isDeckEmpty() -> Bool {
+        return model.numDealtCards == model.cards.count
+    }
 
     var cards: Array<SetGame<CardProperties>.Card> {
         let numDealt = model.numDealtCards

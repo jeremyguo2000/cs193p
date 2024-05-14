@@ -18,9 +18,10 @@ struct SetView: View {
                 cards
             }
             Spacer()
+            (viewModel.isDeckEmpty() ? nil :
             Button("Deal") {
                 viewModel.deal()
-            }
+            })
             Button("New Game") {
                 viewModel.newGame()
             }

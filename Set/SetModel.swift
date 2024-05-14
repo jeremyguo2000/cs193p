@@ -118,50 +118,59 @@ struct SetGame<CardContent> {
     
         }
     
-        // TODO: check your closure shit i think it's buggy
         let symbolCheck = allSameOrDifferent(chosenCardIdxs) { idx in
             cards[idx].symbol
         }
-        let shadingCheck = true
-        let numCheck = true
-        let colorCheck = true
+        print("symbolCheck was \(symbolCheck)")
         
-        /*
+        // TODO: some example with shading fails
         let shadingCheck = allSameOrDifferent(chosenCardIdxs) { idx in
-            cards[chosenCardIdxs[idx]].shading
+            cards[idx].shading
         }
+        print("shadingCheck was \(shadingCheck)")
+        
+        
         let numCheck = allSameOrDifferent(chosenCardIdxs) { idx in
-            cards[chosenCardIdxs[idx]].numSymbols
+            cards[idx].numSymbols
         }
+        print("numCheck was \(numCheck)")
+        
         let colorCheck = allSameOrDifferent(chosenCardIdxs) { idx in
-            cards[chosenCardIdxs[idx]].elemColor
+            cards[idx].elemColor
         }
-        */
+        print("colorCheck was \(colorCheck)")
+        
         curSetStatus = (symbolCheck && shadingCheck && numCheck && colorCheck) ? chosenCardsState.valid : chosenCardsState.invalid
         
         print("checking... ")
         print("chosenIdxs \(chosenCardIdxs)")
-        print("symbolCheck is \(symbolCheck)")
-        print("shadingCheck is \(shadingCheck)")
-        print("numCheck is \(numCheck)")
-        print("colorCheck is \(colorCheck)")
+        
+       
         print("curSetStatus is \(curSetStatus)")
     }
     
-    // the closure is the function that tells you which field to extract from the card
+    // the property closure takes the index of the card (in cards) and looks up the desired field
     // we use generic since maybe the card properties could be Int or String
     // works for any set size, not just 3
     // written by chatgpt
     // TODO: this is causing something to crash...
     func allSameOrDifferent<U: Equatable & Hashable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
         
-        let firstVal = property(0)
+        // IMPT: you need to access this here since allSame and allDiff already look at each elem in chosenCardIdxs
+        let firstVal = property(chosenCardIdxs[0])
+        
         let allSame = chosenCardIdxs.allSatisfy { idx in
-            property(idx) == firstVal
+            print("Comparing \(property(idx)) at idx \(idx) with \(firstVal)")
+            return property(idx) == firstVal
         }
+        
         let allDiff = Set(chosenCardIdxs.map { idx in
-            property(idx)
+            print("Property value at index \(idx): \(property(idx))")
+            return property(idx)
         }).count == chosenCardIdxs.count
+        
+        print("allSame \(allSame)")
+        print("allDiff \(allDiff)")
         
         return allSame || allDiff
     }
