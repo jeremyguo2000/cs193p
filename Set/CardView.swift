@@ -28,14 +28,14 @@ struct CardView: View {
                     getViewFromCard(card)
                 }
             }
-        }.overlay(getSelectionOverlay().opacity(card.isSelected ? 0.5 : 0))
+        }.overlay(getSelectionOverlay().opacity(card.isSelected ? 0.3 : 0))
     }
     
     func getSelectionOverlay() -> SwiftUI.Color {
         
         switch(viewModel.getSetStatus()) {
         case .too_few:
-            return Color.blue
+            return Color.gray
         case .invalid:
             return Color.red
         case .valid:

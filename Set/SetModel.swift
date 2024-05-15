@@ -13,7 +13,7 @@ struct SetGame<CardContent> {
     
     private(set) var cards: Array<Card>
     private(set) var numDealtCards: Int
-    private(set) var numChosenCards: Int // TODO: merge this into the other variable
+    private(set) var numChosenCards: Int // TODO: don't need if u have chosenCardIdxs
     private(set) var curSetStatus: chosenCardsState
     private(set) var chosenCardIdxs: [Int]
     
@@ -49,52 +49,44 @@ struct SetGame<CardContent> {
         
     }
     
+    // TODO: buggy when reselecting a card originally in the set of 3 (it doesn't
+    // deselect it and reselect it again)
+    
     // func for selecting cards
     mutating func choose(_ card: Card) {
         print("chose \(card)")
-
-        // TODO: you should only be able to choose up to 3, so you need to keep track
         
-        // TODO: i think this is fine for now since the card order might change after match
         // In Swift, structures, enumerations, and tuples are all value types.
         let chosenIndex = cards.firstIndex(where: {$0.id == card.id})
         print("In choose, chosenIndex \(String(describing: chosenIndex))")
         
-        if cards[chosenIndex!].isSelected {
+        let cardOriginallySelected = cards[chosenIndex!].isSelected
+        
+        if numChosenCards == setSize {
+            // TODO: you need to deselect all, but reselect the one tha was clicked
+            deselectAllCards()
+        }
+        
+        if cardOriginallySelected {
+            cards[chosenIndex!].isSelected = false
             
-            if numChosenCards < setSize {
-                cards[chosenIndex!].isSelected = false
-                
-                let copyOfChosenIdxs = chosenCardIdxs
-                chosenCardIdxs.removeAll { idx in
-                    print("removing idx is \(idx)")
-                    return cards[chosenIndex!].id == cards[idx].id
-                }
-            
-                numChosenCards = max(0, numChosenCards - 1)
-                print("all chosen indices \(chosenCardIdxs)")
-            } else {
-                //  should not be able to do anything when u hit 3
-                deselectAllCards()
+            let copyOfChosenIdxs = chosenCardIdxs
+            chosenCardIdxs.removeAll { idx in
+                print("removing idx is \(idx)")
+                return cards[chosenIndex!].id == cards[idx].id
             }
+        
+            numChosenCards = max(0, numChosenCards - 1)
+            print("all chosen indices \(chosenCardIdxs)")
  
         } else {
             cards[chosenIndex!].isSelected = true
-            if numChosenCards < setSize { // 0, 1 cards selected
-                chosenCardIdxs.append(chosenIndex!)
-                numChosenCards += 1
-                print("all chosen indices \(chosenCardIdxs)")
-                
-                if (numChosenCards == setSize) {
-                    isSet()
-                }
-                
-            } else {
-                deselectAllCards()
-                // TODO: you need to select the card that was clicked here
-            }
-            
+            chosenCardIdxs.append(chosenIndex!)
+            numChosenCards += 1
+            print("all chosen indices \(chosenCardIdxs)")
         }
+        
+        isSet()
         
     }
     
@@ -119,7 +111,6 @@ struct SetGame<CardContent> {
         }
         print("symbolCheck was \(symbolCheck)")
         
-        // TODO: some example with shading fails
         let shadingCheck = allSameOrDifferent(chosenCardIdxs) { idx in
             cards[idx].shading
         }
@@ -149,7 +140,7 @@ struct SetGame<CardContent> {
     // TODO: this is causing something to crash...
     func allSameOrDifferent<U: Equatable & Hashable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
         
-        // IMPT: you need to access this here since allSame and allDiff already look at each elem in chosenCardIdxs
+        // IMPT: you need to access this here since allSame and allDiff access the elem directly
         let firstVal = property(chosenCardIdxs[0])
         
         let allSame = chosenCardIdxs.allSatisfy { idx in
@@ -172,7 +163,6 @@ struct SetGame<CardContent> {
     
     mutating func deselectAllCards() {
         print("deselect all cards")
-        // TODO: reset all cards
         for i in cards.indices {
             cards[i].isSelected = false
         }
@@ -255,4 +245,4 @@ struct CardProperties {
     let color: ElemColor
 }
 
-// TODO: figure out where to put the shit where
+// TODO: figure out where to put the shit where (Model or ViewModel?)
