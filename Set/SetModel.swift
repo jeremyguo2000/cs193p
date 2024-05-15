@@ -17,10 +17,6 @@ struct SetGame<CardContent> {
     let numStartCards = 12
     let setSize = 3 // num cards in a set
     
-    
-    // TODO: what should be the behavior when cards are matched? should we
-    // put them somewhere else?
-    
     init(cardContentFactory: (Symbol, Shading, NumberOfSymbols, ElemColor) -> CardContent) {
         cards = []
         chosenCardIdxs = []
@@ -40,9 +36,7 @@ struct SetGame<CardContent> {
                 }
             }
         }
-        
         cards.shuffle()
-        
     }
     
     mutating func choose(_ card: Card) {
@@ -52,15 +46,26 @@ struct SetGame<CardContent> {
         let chosenIndex = cards.firstIndex(where: {$0.id == card.id})
         print("In choose, chosenIndex \(String(describing: chosenIndex))")
         
-        let cardOriginallySelected = cards[chosenIndex!].isSelected
+        // rmb this since deselection resets all the states
+        let cardWasPreviouslySelected = cards[chosenIndex!].isSelected
+        var cardIsFromMatchedSet = false
         
         // already 3 selected cards, need to start again
         if chosenCardIdxs.count == setSize {
+            // check if it's a valid set, then remove it from the deck and deal 3 cards
+            if curSetStatus == chosenCardsState.valid {
+                chosenCardIdxs.forEach {
+                    cards[$0].isMatched = true
+                    cardIsFromMatchedSet = chosenCardIdxs.contains(chosenIndex!)
+                }
+                deal()
+            }
             deselectAllCards()
         }
         
-        // 2nd condition is for when starting a new game (it's the 4th card selected from the previous round), you should still select the card
-        if cardOriginallySelected && chosenCardIdxs.count != 0 {
+        // 2nd condition is for when starting a new game (it's the 4th card selected from the previous round),
+        // you should still select the card UNLESS it was part of the matched set
+        if cardWasPreviouslySelected && (chosenCardIdxs.count != 0 || cardIsFromMatchedSet) {
             cards[chosenIndex!].isSelected = false
             chosenCardIdxs.removeAll { idx in
                 print("removing idx is \(idx)")
@@ -77,6 +82,13 @@ struct SetGame<CardContent> {
         isSet()
     }
     
+    // TODO: what should be the behavior when cards are matched?
+    // if they form a set remove
+    // otherwise deselect
+    // removal pseudocode;
+    // should i remove from the deck or what??
+    
+    
     enum chosenCardsState: String {
         case too_few
         case invalid
@@ -84,6 +96,7 @@ struct SetGame<CardContent> {
     }
     
     // checks if the current set of cards is a set
+    // also marks the cards as matched if so
     mutating func isSet() -> Void {
         print("checking for set")
     
@@ -115,9 +128,6 @@ struct SetGame<CardContent> {
         print("colorCheck was \(colorCheck)")
         
         curSetStatus = (symbolCheck && shadingCheck && numCheck && colorCheck) ? chosenCardsState.valid : chosenCardsState.invalid
-        
-        print("chosenIdxs \(chosenCardIdxs)")
-        print("curSetStatus is \(curSetStatus)")
     }
     
     // the property closure takes the index of the card (in cards) and looks up the desired field
@@ -181,6 +191,8 @@ struct SetGame<CardContent> {
         let shading: Shading
         let numSymbols: NumberOfSymbols
         let elemColor: ElemColor
+        var isMatched = false
+        // TODO: don't display matched cards
     }
     
 

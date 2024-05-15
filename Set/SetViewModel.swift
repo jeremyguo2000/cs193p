@@ -9,7 +9,7 @@ import SwiftUI
 
 
 
-// deal 12 cards (at any point in time, there should always be 12 cards)
+// TODO: deal 12 cards (at any point in time, there should always be 12 cards)
 // keep finding sets until there are no more cards on the table
 
 class SetViewModel: ObservableObject {
@@ -18,8 +18,6 @@ class SetViewModel: ObservableObject {
     
     private static func createSetGame() -> SetGame<CardProperties> {
         return SetGame() {symbol, shading, numberOfSymbols, color in
-            // this is the closure
-            // TODO: why is it such a dumbass way of doing i can't access shit
             return CardProperties(symbol: symbol, shading: shading, numberOfSymbols: numberOfSymbols, color: color)
         }
     }
@@ -28,8 +26,6 @@ class SetViewModel: ObservableObject {
         model = SetViewModel.createSetGame()
     }
 
-
-    // deal 3 more cards
     func deal() {
         model.deal()
     }
@@ -44,18 +40,19 @@ class SetViewModel: ObservableObject {
     }
     
     func getSetStatus() -> SetGame<CardProperties>.chosenCardsState {
-        // TODO: the model should be telling the shading
-        // red? green? blue?
         return model.curSetStatus
     }
     
+    // TODO: rework this
     func isDeckEmpty() -> Bool {
         return model.numDealtCards == model.cards.count
     }
 
     var cards: Array<SetGame<CardProperties>.Card> {
         let numDealt = model.numDealtCards
-        return Array(model.cards.prefix(numDealt))
+        return Array(model.cards.prefix(numDealt)).filter { card in
+            !card.isMatched
+        }
     }
     
 
