@@ -62,23 +62,21 @@ struct SetGame<CardContent> {
         
         let cardOriginallySelected = cards[chosenIndex!].isSelected
         
+        // already 3 selected cards, need to start again
         if numChosenCards == setSize {
-            // TODO: you need to deselect all, but reselect the one tha was clicked
             deselectAllCards()
         }
         
-        if cardOriginallySelected {
+        // 2nd condition is for when starting a new game, you should select the card it
+        if cardOriginallySelected && numChosenCards != 0 {
             cards[chosenIndex!].isSelected = false
-            
-            let copyOfChosenIdxs = chosenCardIdxs
             chosenCardIdxs.removeAll { idx in
                 print("removing idx is \(idx)")
                 return cards[chosenIndex!].id == cards[idx].id
             }
-        
             numChosenCards = max(0, numChosenCards - 1)
             print("all chosen indices \(chosenCardIdxs)")
- 
+
         } else {
             cards[chosenIndex!].isSelected = true
             chosenCardIdxs.append(chosenIndex!)
@@ -87,7 +85,6 @@ struct SetGame<CardContent> {
         }
         
         isSet()
-        
     }
     
     enum chosenCardsState: String {
