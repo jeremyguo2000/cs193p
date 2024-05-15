@@ -7,13 +7,10 @@
 
 import Foundation
 
-// TODO: deselect the shit properly you need to reset the count
-
 struct SetGame<CardContent> {
     
     private(set) var cards: Array<Card>
     private(set) var numDealtCards: Int
-    private(set) var numChosenCards: Int // TODO: don't need if u have chosenCardIdxs
     private(set) var curSetStatus: chosenCardsState
     private(set) var chosenCardIdxs: [Int]
     
@@ -28,7 +25,6 @@ struct SetGame<CardContent> {
         cards = []
         chosenCardIdxs = []
         numDealtCards = numStartCards
-        numChosenCards = 0
         curSetStatus = .too_few
         
         for symbol in Symbol.allCases {
@@ -49,10 +45,6 @@ struct SetGame<CardContent> {
         
     }
     
-    // TODO: buggy when reselecting a card originally in the set of 3 (it doesn't
-    // deselect it and reselect it again)
-    
-    // func for selecting cards
     mutating func choose(_ card: Card) {
         print("chose \(card)")
         
@@ -63,24 +55,22 @@ struct SetGame<CardContent> {
         let cardOriginallySelected = cards[chosenIndex!].isSelected
         
         // already 3 selected cards, need to start again
-        if numChosenCards == setSize {
+        if chosenCardIdxs.count == setSize {
             deselectAllCards()
         }
         
-        // 2nd condition is for when starting a new game, you should select the card it
-        if cardOriginallySelected && numChosenCards != 0 {
+        // 2nd condition is for when starting a new game (it's the 4th card selected from the previous round), you should still select the card
+        if cardOriginallySelected && chosenCardIdxs.count != 0 {
             cards[chosenIndex!].isSelected = false
             chosenCardIdxs.removeAll { idx in
                 print("removing idx is \(idx)")
                 return cards[chosenIndex!].id == cards[idx].id
             }
-            numChosenCards = max(0, numChosenCards - 1)
             print("all chosen indices \(chosenCardIdxs)")
 
         } else {
             cards[chosenIndex!].isSelected = true
             chosenCardIdxs.append(chosenIndex!)
-            numChosenCards += 1
             print("all chosen indices \(chosenCardIdxs)")
         }
         
@@ -97,7 +87,7 @@ struct SetGame<CardContent> {
     mutating func isSet() -> Void {
         print("checking for set")
     
-        if numChosenCards < setSize {
+        if chosenCardIdxs.count < setSize {
             curSetStatus = chosenCardsState.too_few
             return
     
@@ -132,9 +122,7 @@ struct SetGame<CardContent> {
     
     // the property closure takes the index of the card (in cards) and looks up the desired field
     // we use generic since maybe the card properties could be Int or String
-    // works for any set size, not just 3
     // written by chatgpt
-    // TODO: this is causing something to crash...
     func allSameOrDifferent<U: Equatable & Hashable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
         
         // IMPT: you need to access this here since allSame and allDiff access the elem directly
@@ -163,7 +151,6 @@ struct SetGame<CardContent> {
         for i in cards.indices {
             cards[i].isSelected = false
         }
-        numChosenCards = 0
         chosenCardIdxs = [] // TODO: check if anything else
         curSetStatus = .too_few
     }
