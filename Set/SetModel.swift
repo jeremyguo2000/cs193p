@@ -41,9 +41,13 @@ struct SetGame<CardContent> {
         cards.shuffle()
     }
     
-    // Refactored with chatGPT but it messed up some parts
+    // Refactored with chatGPT but i had to edit some parts
     // handleMatch expects 3 cards to already be selected
-    private mutating func handleMatch(_ chosenIndex:Int?) -> Bool {
+    // this marks valid matches as such, and deselects them
+    // if they are not valid we may or may not deselect,
+    // depending on whether this is from clicking the 4th card
+    // or from pressing the deal button
+    private mutating func checkMatch(_ chosenIndex:Int?) -> Bool {
         var cardIsFromMatchedSet = false
         if curSetStatus == chosenCardsState.valid {
             chosenCardIdxs.forEach {
@@ -57,13 +61,13 @@ struct SetGame<CardContent> {
         return cardIsFromMatchedSet
     }
     
-    private mutating func handleMatchAndDeal(_ chosenIndex: Int?) -> Bool {
+    // this path is from clicking the fourth card
+    private mutating func checkMatchAndDeal(_ chosenIndex: Int?) -> Bool {
         var cardIsFromMatchedSet = false
         
         if chosenCardIdxs.count == setSize {
-            cardIsFromMatchedSet = handleMatch(chosenIndex)
+            cardIsFromMatchedSet = checkMatch(chosenIndex)
             if curSetStatus == chosenCardsState.valid {
-                cardIsFromMatchedSet = handleMatch(chosenIndex)
                 dealThreeCards()
             }
             deselectAllCards()
@@ -71,54 +75,19 @@ struct SetGame<CardContent> {
         return cardIsFromMatchedSet
     }
     
-    mutating func deal() {
+    // this path is from the actual button
+    mutating func manualDeal() {
         if chosenCardIdxs.count == setSize {
-            _ = handleMatch(nil)
+            _ = checkMatch(nil)
         }
         dealThreeCards()
     }
-    
-    // removed the selected cards if they are a match, then deal
-    // returns true if the currently selected card was part of the matched set
-    /* private mutating func handleMatchAndDeal(_ chosenIndex: Int?) -> Bool {
-        var cardIsFromMatchedSet = false
-        // already 3 selected cards, need to start again
-        if chosenCardIdxs.count == setSize {
-            // check if it's a valid set, then remove it from the deck and deal 3 cards
-            if curSetStatus == chosenCardsState.valid {
-                chosenCardIdxs.forEach {
-                    cards[$0].isMatched = true
-                    cardIsFromMatchedSet = chosenCardIdxs.contains(chosenIndex!)
-                }
-                dealThreeCards()
-            }
-            deselectAllCards()
-        }
-        return cardIsFromMatchedSet
-    } */
     
     // helper function for deal
     private mutating func dealThreeCards() {
         numDealtCards = min(numDealtCards + 3, cards.count)
     }
-    
-    // logic for the deal button
-    // TODO: this is too similar to removeMatchAndDeal?
-    /* mutating func deal() {
-        // if the current 3 selected cards form a match, remove them
-        if chosenCardIdxs.count == setSize {
-            // check if it's a valid set, then remove it from the deck and deal 3 cards
-            if curSetStatus == chosenCardsState.valid {
-                chosenCardIdxs.forEach {
-                    cards[$0].isMatched = true
-                }
-                deselectAllCards()
-            }
-        }
-        // always deal 3 more cards
-        dealThreeCards()
-    } */
-    
+
     mutating func choose(_ card: Card) {
         print("chose \(card)")
         
@@ -130,7 +99,7 @@ struct SetGame<CardContent> {
         let cardWasPreviouslySelected = cards[chosenIndex!].isSelected
         var cardIsFromMatchedSet = false
         
-        cardIsFromMatchedSet = handleMatchAndDeal(chosenIndex)
+        cardIsFromMatchedSet = checkMatchAndDeal(chosenIndex)
         
         // 2nd condition is for when starting a new game (it's the 4th card selected from the previous round),
         // you should still select the card UNLESS it was part of the matched set

@@ -27,7 +27,7 @@ class SetViewModel: ObservableObject {
     }
 
     func deal() {
-        model.deal()
+        model.manualDeal()
     }
 
     func newGame() {
