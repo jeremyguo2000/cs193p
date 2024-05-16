@@ -43,7 +43,6 @@ class SetViewModel: ObservableObject {
         return model.curSetStatus
     }
     
-    // TODO: rework this
     func isDeckEmpty() -> Bool {
         return model.numDealtCards == model.cards.count
     }
