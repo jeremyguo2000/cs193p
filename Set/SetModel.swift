@@ -7,6 +7,8 @@
 
 import Foundation
 
+// TODO: get rid of CardContent, seems redundant
+
 struct SetGame<CardContent> {
     
     private(set) var cards: Array<Card>
@@ -14,8 +16,8 @@ struct SetGame<CardContent> {
     private(set) var curSetStatus: chosenCardsState
     private(set) var chosenCardIdxs: [Int]
     
-    let numStartCards = 12
-    let setSize = 3 // num cards in a set
+    private let numStartCards = 12
+    private let setSize = 3 // num cards in a set
     
     init(cardContentFactory: (Symbol, Shading, NumberOfSymbols, ElemColor) -> CardContent) {
         cards = []
@@ -39,6 +41,51 @@ struct SetGame<CardContent> {
         cards.shuffle()
     }
     
+    // removed the selected cards if they are a match, then deal
+    // returns true if the currently selected card was part of the matched set
+    // the result is useful when you select the 4th card, but
+    // not used when you press Deal (since the chosenCard will be one of the 3 selected)
+    // chosenIndex is the index into the cards array of the card that's chosen
+    mutating func removeMatchAndDeal(_ chosenIndex: Int?) -> Bool {
+        var cardIsFromMatchedSet = false
+        // already 3 selected cards, need to start again
+        if chosenCardIdxs.count == setSize {
+            // check if it's a valid set, then remove it from the deck and deal 3 cards
+            if curSetStatus == chosenCardsState.valid {
+                chosenCardIdxs.forEach {
+                    cards[$0].isMatched = true
+                    cardIsFromMatchedSet = chosenCardIdxs.contains(chosenIndex!)
+                }
+                dealThreeCards()
+            }
+            deselectAllCards()
+        }
+        return cardIsFromMatchedSet
+    }
+    
+    // helper function for deal
+    mutating func dealThreeCards() {
+        numDealtCards += 3
+    }
+    
+    // func for dealing
+    // TODO: this is too similar to removeMatchAndDeal?
+    mutating func deal() {
+        // if the current 3 selected cards form a match, remove them
+        if chosenCardIdxs.count == setSize {
+            // check if it's a valid set, then remove it from the deck and deal 3 cards
+            if curSetStatus == chosenCardsState.valid {
+                chosenCardIdxs.forEach {
+                    cards[$0].isMatched = true
+                }
+                deselectAllCards()
+            }
+        }
+        
+        // always deal 3 more cards
+        dealThreeCards()
+    }
+    
     mutating func choose(_ card: Card) {
         print("chose \(card)")
         
@@ -50,18 +97,7 @@ struct SetGame<CardContent> {
         let cardWasPreviouslySelected = cards[chosenIndex!].isSelected
         var cardIsFromMatchedSet = false
         
-        // already 3 selected cards, need to start again
-        if chosenCardIdxs.count == setSize {
-            // check if it's a valid set, then remove it from the deck and deal 3 cards
-            if curSetStatus == chosenCardsState.valid {
-                chosenCardIdxs.forEach {
-                    cards[$0].isMatched = true
-                    cardIsFromMatchedSet = chosenCardIdxs.contains(chosenIndex!)
-                }
-                deal()
-            }
-            deselectAllCards()
-        }
+        cardIsFromMatchedSet = removeMatchAndDeal(chosenIndex)
         
         // 2nd condition is for when starting a new game (it's the 4th card selected from the previous round),
         // you should still select the card UNLESS it was part of the matched set
@@ -79,15 +115,10 @@ struct SetGame<CardContent> {
             print("all chosen indices \(chosenCardIdxs)")
         }
         
-        isSet()
+        // you want to display the borders after 3 cards are clicked
+        // but the actual removal and resetting etc. is done only on the 4th click
+        checkForSet()
     }
-    
-    // TODO: what should be the behavior when cards are matched?
-    // if they form a set remove
-    // otherwise deselect
-    // removal pseudocode;
-    // should i remove from the deck or what??
-    
     
     enum chosenCardsState: String {
         case too_few
@@ -97,7 +128,7 @@ struct SetGame<CardContent> {
     
     // checks if the current set of cards is a set
     // also marks the cards as matched if so
-    mutating func isSet() -> Void {
+    mutating func checkForSet() -> Void {
         print("checking for set")
     
         if chosenCardIdxs.count < setSize {
@@ -154,8 +185,6 @@ struct SetGame<CardContent> {
         return allSame || allDiff
     }
     
-
-    
     mutating func deselectAllCards() {
         print("deselect all cards")
         for i in cards.indices {
@@ -164,16 +193,7 @@ struct SetGame<CardContent> {
         chosenCardIdxs = [] // TODO: check if anything else
         curSetStatus = .too_few
     }
-    
-    // func for dealing
-    mutating func deal() {
-        if numDealtCards < cards.count {
-            numDealtCards += 3
-        }
-        print("numDealtCards \(numDealtCards)")
-    }
-    
-    
+        
     private mutating func shuffle() {
         cards.shuffle()
     }
@@ -192,7 +212,6 @@ struct SetGame<CardContent> {
         let numSymbols: NumberOfSymbols
         let elemColor: ElemColor
         var isMatched = false
-        // TODO: don't display matched cards
     }
     
 
@@ -241,4 +260,3 @@ struct CardProperties {
     let color: ElemColor
 }
 
-// TODO: figure out where to put the shit where (Model or ViewModel?)
