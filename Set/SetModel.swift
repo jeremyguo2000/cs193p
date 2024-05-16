@@ -43,10 +43,7 @@ struct SetGame<CardContent> {
     
     // removed the selected cards if they are a match, then deal
     // returns true if the currently selected card was part of the matched set
-    // the result is useful when you select the 4th card, but
-    // not used when you press Deal (since the chosenCard will be one of the 3 selected)
-    // chosenIndex is the index into the cards array of the card that's chosen
-    mutating func removeMatchAndDeal(_ chosenIndex: Int?) -> Bool {
+    private mutating func removeMatchAndDeal(_ chosenIndex: Int?) -> Bool {
         var cardIsFromMatchedSet = false
         // already 3 selected cards, need to start again
         if chosenCardIdxs.count == setSize {
@@ -64,11 +61,11 @@ struct SetGame<CardContent> {
     }
     
     // helper function for deal
-    mutating func dealThreeCards() {
+    private mutating func dealThreeCards() {
         numDealtCards += 3
     }
     
-    // func for dealing
+    // logic for the deal button
     // TODO: this is too similar to removeMatchAndDeal?
     mutating func deal() {
         // if the current 3 selected cards form a match, remove them
@@ -81,7 +78,6 @@ struct SetGame<CardContent> {
                 deselectAllCards()
             }
         }
-        
         // always deal 3 more cards
         dealThreeCards()
     }
@@ -190,7 +186,7 @@ struct SetGame<CardContent> {
         for i in cards.indices {
             cards[i].isSelected = false
         }
-        chosenCardIdxs = [] // TODO: check if anything else
+        chosenCardIdxs = []
         curSetStatus = .too_few
     }
         
