@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-// TODO: i think some of this code belongs in the ViewModel
-
+// TODO: rename let card: SetViewModel.CardViewData
+// since i don't think it reflects what's up
 struct CardView: View {
     let card: SetViewModel.CardViewData
     @ObservedObject var viewModel: SetViewModel

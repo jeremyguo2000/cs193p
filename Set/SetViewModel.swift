@@ -28,8 +28,10 @@ class SetViewModel: ObservableObject {
         model = SetViewModel.createSetGame()
     }
 
-    func choose(_ card: SetGame.Card) {
-        model.choose(card)
+    // TODO: refactor this, it is repeating it in the SetModel
+    func choose(_ card: SetViewModel.CardViewData) {
+        let cardIdx = model.cards.firstIndex(where: {$0.id == card.id})
+        model.choose(model.cards[cardIdx!])
     }
     
     func getSetStatus() -> SetGame.chosenCardsState {
@@ -41,10 +43,12 @@ class SetViewModel: ObservableObject {
     }
 
     // TODO: you should modifiy this function to return an array of CardViewData
-    var cards: Array<SetGame.Card> {
+    var cards: Array<SetViewModel.CardViewData> {
         let numDealt = model.numDealtCards
         return Array(model.cards.prefix(numDealt)).filter { card in
             !card.isMatched
+        }.map { card in
+            getCardViewData(card)
         }
     }
     
