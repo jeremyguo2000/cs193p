@@ -7,10 +7,8 @@
 
 import SwiftUI
 
-// TODO: rename let card: SetViewModel.CardViewData
-// since i don't think it reflects what's up
 struct CardView: View {
-    let card: SetViewModel.CardViewData
+    let cardViewData: SetViewModel.CardViewData
     @ObservedObject var viewModel: SetViewModel
     
     private struct Constants {
@@ -28,10 +26,10 @@ struct CardView: View {
             Group {
                 base.fill(.white).strokeBorder(lineWidth: Constants.cardBorder)
                 VStack {
-                    getViewFromCard(card)
+                    getViewFromCard(cardViewData)
                 }
             }
-        }.overlay(viewModel.getOverlayColorForSetStatus().opacity(card.isSelected ? Constants.cardSelectedOpacity : Constants.cardUnselectedOpacity))
+        }.overlay(viewModel.getOverlayColorForSetStatus().opacity(cardViewData.isSelected ? Constants.cardSelectedOpacity : Constants.cardUnselectedOpacity))
     }
     
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
