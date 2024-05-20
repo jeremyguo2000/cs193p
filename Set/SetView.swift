@@ -30,17 +30,25 @@ struct SetView: View {
         }
         .padding()
     }
-
+    
+    
     var cards: some View {
         GeometryReader { geometry in
             
-            let gridItemSize = gridItemWidthThatFits(
+            // TODO: magic constants galore
+            let tooManyCards = viewModel.cards.count > 30
+            var gridItemSize : CGFloat
+            
+            if tooManyCards {
+                gridItemSize = 65
+            } else { gridItemSize = gridItemWidthThatFits(
                 count: viewModel.cards.count,
                 size: geometry.size,
-                atAspectRatio: 2/3
-            )
+                atAspectRatio: 2/3)
+            }
+    
             
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
+            let grid = LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
                 ForEach(viewModel.cards) { card in
                     CardView(card: card, viewModel: viewModel)
                         .aspectRatio(2/3, contentMode: .fit)
@@ -50,6 +58,11 @@ struct SetView: View {
                         }
                 }
             }
+            
+            return Group {
+                tooManyCards ? AnyView(ScrollView {grid}) : AnyView(grid)
+            }
+            
         }
     }
     
