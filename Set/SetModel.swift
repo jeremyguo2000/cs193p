@@ -230,17 +230,6 @@ enum NumberOfSymbols: String, CaseIterable {
     case ONE
     case TWO
     case THREE
-    
-    func getNumSymbols() -> Int {
-        switch self {
-            case .ONE:
-                return 1
-            case .TWO:
-                return 2
-            case .THREE:
-                return 3
-        }
-    }
 }
 
 enum ElemColor: String, CaseIterable {

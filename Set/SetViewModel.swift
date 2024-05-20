@@ -47,6 +47,28 @@ class SetViewModel: ObservableObject {
         }
     }
     
+    // chatgpt suggests doing this to decouple the view from the model
+    // TODO: experiment what happens if u don't do this
+    struct CardViewData : Identifiable {
+        let id: String
+        let shape: AnyShape
+        let color: Color
+        let fillOpacity: Double
+        let numSymbols: Int
+        let isSelected: Bool
+    }
+    
+    func getCardViewData(_ card: SetGame.Card) -> CardViewData {
+        let shape = getShape(card)
+        let color = getColor(card)
+        let fillOpacity = getShading(card)
+        let numSymbols = getNumSymbols(card)
+        // TODO: will this work?
+        let isSelected = card.isSelected
+        
+        return CardViewData(id: card.id, shape: shape, color: color, fillOpacity: fillOpacity, numSymbols: numSymbols, isSelected: isSelected)
+    }
+    
     func getSelectionOverlay() -> SwiftUI.Color {
         switch(getSetStatus()) {
             case .too_few:
@@ -55,6 +77,17 @@ class SetViewModel: ObservableObject {
                 return Color.red
             case .valid:
                 return Color.green
+        }
+    }
+    
+    func getShape(_ card: SetGame.Card) -> AnyShape {
+        switch(card.symbol) {
+        case .diamond:
+            AnyShape(Diamond())
+        case .oval:
+            AnyShape(Ellipse())
+        case .rectangle:
+            AnyShape(Rectangle())
         }
     }
     
@@ -77,6 +110,17 @@ class SetViewModel: ObservableObject {
             0.5
         case .fill:
             1
+        }
+    }
+    
+    func getNumSymbols(_ card: SetGame.Card) -> Int {
+        switch (card.numSymbols) {
+            case .ONE:
+                return 1
+            case .TWO:
+                return 2
+            case .THREE:
+                return 3
         }
     }
 }

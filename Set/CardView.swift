@@ -10,7 +10,7 @@ import SwiftUI
 // TODO: i think some of this code belongs in the ViewModel
 
 struct CardView: View {
-    let card: SetGame.Card
+    let card: SetViewModel.CardViewData
     @ObservedObject var viewModel: SetViewModel
     
     private struct Constants {
@@ -36,24 +36,18 @@ struct CardView: View {
     
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
     @ViewBuilder
-    func getViewFromCard(_ card: SetGame.Card) -> some View {
-        let shape = switch(card.symbol) {
-        case .diamond:
-            AnyShape(Diamond())
-        case .oval:
-            AnyShape(Ellipse())
-        case .rectangle:
-            AnyShape(Rectangle())
-        }
-        
-        let shapeColor = viewModel.getColor(card)
-        let shapeOpacity = viewModel.getShading(card)
+    // TODO: you should still not be passing SetGame.Card 
+    func getViewFromCard(_ card: SetViewModel.CardViewData) -> some View {
+        let shape = card.shape
+        let shapeColor = card.color
+        let shapeOpacity = card.fillOpacity
+        let numSymbols = card.numSymbols
         
         // don't need explicit return with @ViewBuilder
         shape
             .stroke(shapeColor, lineWidth: Constants.shapeBorder)
             .overlay(shape.fill(shapeColor.opacity(shapeOpacity)))
-            .duplicate(count: card.numSymbols.getNumSymbols())
+            .duplicate(count: numSymbols)
             .padding(Constants.shapePadding)
     }
 

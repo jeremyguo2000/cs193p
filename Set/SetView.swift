@@ -52,7 +52,7 @@ struct SetView: View {
             let grid = LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: Constants.cardSpacing)],
                                  spacing: Constants.cardSpacing) {
                 ForEach(viewModel.cards) { card in
-                    CardView(card: card, viewModel: viewModel)
+                    CardView(card: viewModel.getCardViewData(card), viewModel: viewModel)
                         .aspectRatio(Constants.aspectRatio, contentMode: .fit)
                         .padding(Constants.cardPadding)
                         .onTapGesture {
