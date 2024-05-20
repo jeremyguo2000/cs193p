@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// TODO: typedef away some of the obscure shit
 class SetViewModel: ObservableObject {
     
     @Published private var model: SetGame<CardProperties>
@@ -48,10 +49,5 @@ class SetViewModel: ObservableObject {
             !card.isMatched
         }
     }
-    
-
-    
-    
-    
 }
 

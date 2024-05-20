@@ -21,9 +21,11 @@ struct Diamond: Shape {
     
 }
 
-// TODO: tidy this shit, don't hardcode, make adaptive
-let W = CGFloat(40)
-let H = CGFloat(20)
+private struct Constants {
+    static let W = CGFloat(40)
+    static let H = CGFloat(20)
+    
+}
 
 struct Diamond_Previews: PreviewProvider {
     static var previews: some View {
@@ -32,19 +34,19 @@ struct Diamond_Previews: PreviewProvider {
                 VStack() {
                     Diamond()
                         .stroke(.blue)
-                        .frame(width:W, height: H)
+                        .frame(width:Constants.W, height: Constants.H)
                     Diamond()
                         .stroke(.blue)
-                        .frame(width:W, height: H)
+                        .frame(width:Constants.W, height: Constants.H)
                 }
                 Spacer()
                 Ellipse()
                     .stroke(.teal)
-                    .frame(width:W, height: H)
+                    .frame(width:Constants.W, height: Constants.H)
                 Spacer()
                 Rectangle()
                     .stroke(.orange)
-                    .frame(width:W, height: H)
+                    .frame(width:Constants.W, height: Constants.H)
                 
             }.padding(10)
             
@@ -53,7 +55,7 @@ struct Diamond_Previews: PreviewProvider {
                 ForEach(0..<3, content: { _ in
                     Rectangle()
                         .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width:W, height: H)
+                        .frame(width:Constants.W, height: Constants.H)
                 })
             }
             

@@ -7,22 +7,29 @@
 
 import SwiftUI
 
-// TODO: factor out your magic constants and shit
-
 struct CardView: View {
     let card: SetGame<CardProperties>.Card
     @ObservedObject var viewModel: SetViewModel
     
+    private struct Constants {
+        static let cardCornerRadius = CGFloat(12)
+        static let cardBorder = CGFloat(2)
+        static let cardSelectedOpacity = 0.3
+        static let cardUnselectedOpacity = 0.0
+        static let shapeBorder = CGFloat(3)
+        static let shapePadding = CGFloat(8)
+    }
+    
     var body: some View {
         ZStack (alignment: .center) {
-            let base = RoundedRectangle(cornerRadius: 12)
+            let base = RoundedRectangle(cornerRadius: Constants.cardCornerRadius)
             Group {
-                base.fill(.white).strokeBorder(lineWidth: 2)
+                base.fill(.white).strokeBorder(lineWidth: Constants.cardBorder)
                 VStack {
                     getViewFromCard(card)
                 }
             }
-        }.overlay(getSelectionOverlay().opacity(card.isSelected ? 0.3 : 0))
+        }.overlay(getSelectionOverlay().opacity(card.isSelected ? Constants.cardSelectedOpacity : Constants.cardUnselectedOpacity))
     }
     
     func getSelectionOverlay() -> SwiftUI.Color {
@@ -45,10 +52,8 @@ struct CardView: View {
         let shape = switch(card.symbol) {
         case .diamond:
             AnyShape(Diamond())
-            //Diamond()
         case .oval:
             AnyShape(Ellipse())
-            //Ellipse()
         case .rectangle:
             AnyShape(Rectangle())
         }
@@ -58,10 +63,10 @@ struct CardView: View {
         
         // don't need explicit return with @ViewBuilder
         shape
-            .stroke(shapeColor, lineWidth: 3)
+            .stroke(shapeColor, lineWidth: Constants.shapeBorder)
             .overlay(shape.fill(shapeColor.opacity(shapeOpacity)))
             .duplicate(count: card.numSymbols.getNumSymbols())
-            .padding(8)
+            .padding(Constants.shapePadding)
     }
     
     func getColor(_ card: SetGame<CardProperties>.Card) -> SwiftUI.Color {
@@ -75,7 +80,6 @@ struct CardView: View {
         }
     }
     
-    // TODO: should this be in the viewModel?
     func getShading(_ card: SetGame<CardProperties>.Card) -> Double {
         switch (card.shading) {
         case .empty:
@@ -105,10 +109,7 @@ extension View {
 
 struct CardView_Previews:  PreviewProvider {
     static var previews: some View {
-    
         HStack {
-            //CardView(SetGame<CardContent>.Card(content: CardContent(symbol: .diamond, shading: .empty, numberOfSymbols: .ONE, color: .blue), id: "test", test:"f"))
-            
             ZStack {
                 AnyShape(Rectangle())
                     .stroke(Color.blue, lineWidth: 5)
@@ -134,9 +135,6 @@ struct CardView_Previews:  PreviewProvider {
                 AnyShape(Rectangle())
                     .fill(Color.blue.opacity(1))
             }
-
-
-
         }
     }
     

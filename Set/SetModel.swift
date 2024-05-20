@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+ 
 // TODO: get rid of CardContent, seems redundant
 
 struct SetGame<CardContent> {
@@ -166,7 +166,7 @@ struct SetGame<CardContent> {
     // the property closure takes the index of the card (in cards) and looks up the desired field
     // we use generic since maybe the card properties could be Int or String
     // written by chatgpt
-    func allSameOrDifferent<U: Equatable & Hashable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
+    private func allSameOrDifferent<U: Equatable & Hashable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
         
         // IMPT: you need to access this here since allSame and allDiff access the elem directly
         let firstVal = property(chosenCardIdxs[0])
@@ -187,7 +187,7 @@ struct SetGame<CardContent> {
         return allSame || allDiff
     }
     
-    mutating func deselectAllCards() {
+    private mutating func deselectAllCards() {
         print("deselect all cards")
         for i in cards.indices {
             cards[i].isSelected = false
