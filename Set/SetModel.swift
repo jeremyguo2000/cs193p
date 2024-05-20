@@ -85,15 +85,12 @@ struct SetGame {
         numDealtCards = min(numDealtCards + 3, cards.count)
     }
 
-    mutating func choose(_ card: Card) {
-        print("chose \(card)")
-        
+    mutating func choose(_ chosenIndex: Int/*Card*/) {
         // In Swift, structures, enumerations, and tuples are all value types.
-        let chosenIndex = cards.firstIndex(where: {$0.id == card.id})
         print("In choose, chosenIndex \(String(describing: chosenIndex))")
         
         // rmb this since deselection resets all the states
-        let cardWasPreviouslySelected = cards[chosenIndex!].isSelected
+        let cardWasPreviouslySelected = cards[chosenIndex].isSelected
         var cardIsFromMatchedSet = false
         
         cardIsFromMatchedSet = checkMatchAndDeal(chosenIndex)
@@ -101,16 +98,16 @@ struct SetGame {
         // 2nd condition is for when starting a new game (it's the 4th card selected from the previous round),
         // you should still select the card UNLESS it was part of the matched set
         if cardWasPreviouslySelected && (chosenCardIdxs.count != 0 || cardIsFromMatchedSet) {
-            cards[chosenIndex!].isSelected = false
+            cards[chosenIndex].isSelected = false
             chosenCardIdxs.removeAll { idx in
                 print("removing idx is \(idx)")
-                return cards[chosenIndex!].id == cards[idx].id
+                return cards[chosenIndex].id == cards[idx].id
             }
             print("all chosen indices \(chosenCardIdxs)")
 
         } else {
-            cards[chosenIndex!].isSelected = true
-            chosenCardIdxs.append(chosenIndex!)
+            cards[chosenIndex].isSelected = true
+            chosenCardIdxs.append(chosenIndex)
             print("all chosen indices \(chosenCardIdxs)")
         }
         

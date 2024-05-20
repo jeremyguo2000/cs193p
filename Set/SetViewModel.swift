@@ -24,14 +24,12 @@ class SetViewModel: ObservableObject {
     }
 
     func newGame() {
-        print("Starting a new game")
         model = SetViewModel.createSetGame()
     }
 
-    // TODO: refactor this, it is repeating it in the SetModel
     func choose(_ card: SetViewModel.CardViewData) {
         let cardIdx = model.cards.firstIndex(where: {$0.id == card.id})
-        model.choose(model.cards[cardIdx!])
+        model.choose(cardIdx!)
     }
     
     func getSetStatus() -> SetGame.chosenCardsState {
@@ -42,7 +40,6 @@ class SetViewModel: ObservableObject {
         return model.numDealtCards == model.cards.count
     }
 
-    // TODO: you should modifiy this function to return an array of CardViewData
     var cards: Array<SetViewModel.CardViewData> {
         let numDealt = model.numDealtCards
         return Array(model.cards.prefix(numDealt)).filter { card in
@@ -62,7 +59,6 @@ class SetViewModel: ObservableObject {
         let isSelected: Bool
     }
     
-    // TODO: this is for decoupling, but is it really necessary?
     func getCardViewData(_ card: SetGame.Card) -> CardViewData {
         let shape = getShape(card)
         let color = getColor(card)

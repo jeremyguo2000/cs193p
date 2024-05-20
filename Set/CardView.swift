@@ -36,7 +36,6 @@ struct CardView: View {
     
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
     @ViewBuilder
-    // TODO: you should still not be passing SetGame.Card 
     func getViewFromCard(_ card: SetViewModel.CardViewData) -> some View {
         let shape = card.shape
         let shapeColor = card.color
