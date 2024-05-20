@@ -40,6 +40,7 @@ class SetViewModel: ObservableObject {
         return model.numDealtCards == model.cards.count
     }
 
+    // TODO: you should modifiy this function to return an array of CardViewData
     var cards: Array<SetGame.Card> {
         let numDealt = model.numDealtCards
         return Array(model.cards.prefix(numDealt)).filter { card in
@@ -48,7 +49,6 @@ class SetViewModel: ObservableObject {
     }
     
     // chatgpt suggests doing this to decouple the view from the model
-    // TODO: experiment what happens if u don't do this
     struct CardViewData : Identifiable {
         let id: String
         let shape: AnyShape
@@ -58,18 +58,18 @@ class SetViewModel: ObservableObject {
         let isSelected: Bool
     }
     
+    // TODO: this is for decoupling, but is it really necessary?
     func getCardViewData(_ card: SetGame.Card) -> CardViewData {
         let shape = getShape(card)
         let color = getColor(card)
         let fillOpacity = getShading(card)
         let numSymbols = getNumSymbols(card)
-        // TODO: will this work?
         let isSelected = card.isSelected
         
         return CardViewData(id: card.id, shape: shape, color: color, fillOpacity: fillOpacity, numSymbols: numSymbols, isSelected: isSelected)
     }
     
-    func getSelectionOverlay() -> SwiftUI.Color {
+    func getOverlayColorForSetStatus() -> SwiftUI.Color {
         switch(getSetStatus()) {
             case .too_few:
                 return Color.gray

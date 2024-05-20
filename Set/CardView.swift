@@ -31,7 +31,7 @@ struct CardView: View {
                     getViewFromCard(card)
                 }
             }
-        }.overlay(viewModel.getSelectionOverlay().opacity(card.isSelected ? Constants.cardSelectedOpacity : Constants.cardUnselectedOpacity))
+        }.overlay(viewModel.getOverlayColorForSetStatus().opacity(card.isSelected ? Constants.cardSelectedOpacity : Constants.cardUnselectedOpacity))
     }
     
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
