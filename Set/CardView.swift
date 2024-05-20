@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CardView: View {
-    let card: SetGame<CardProperties>.Card
+    let card: SetGame.Card
     @ObservedObject var viewModel: SetViewModel
     
     private struct Constants {
@@ -48,7 +48,7 @@ struct CardView: View {
     
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
     @ViewBuilder
-    func getViewFromCard(_ card: SetGame<CardProperties>.Card) -> some View {
+    func getViewFromCard(_ card: SetGame.Card) -> some View {
         let shape = switch(card.symbol) {
         case .diamond:
             AnyShape(Diamond())
@@ -69,7 +69,7 @@ struct CardView: View {
             .padding(Constants.shapePadding)
     }
     
-    func getColor(_ card: SetGame<CardProperties>.Card) -> SwiftUI.Color {
+    func getColor(_ card: SetGame.Card) -> SwiftUI.Color {
         switch (card.elemColor) {
         case .blue:
             SwiftUI.Color.blue
@@ -80,12 +80,12 @@ struct CardView: View {
         }
     }
     
-    func getShading(_ card: SetGame<CardProperties>.Card) -> Double {
+    func getShading(_ card: SetGame.Card) -> Double {
         switch (card.shading) {
         case .empty:
             0
         case .stripe:
-            0.3
+            0.5
         case .fill:
             1
         }

@@ -6,10 +6,8 @@
 //
 
 import Foundation
- 
-// TODO: get rid of CardContent, seems redundant
 
-struct SetGame<CardContent> {
+struct SetGame {
     
     private(set) var cards: Array<Card>
     private(set) var numDealtCards: Int
@@ -19,7 +17,7 @@ struct SetGame<CardContent> {
     private let numStartCards = 12
     private let setSize = 3 // num cards in a set
     
-    init(cardContentFactory: (Symbol, Shading, NumberOfSymbols, ElemColor) -> CardContent) {
+    init() {
         cards = []
         chosenCardIdxs = []
         numDealtCards = numStartCards
@@ -29,9 +27,8 @@ struct SetGame<CardContent> {
             for shading in Shading.allCases {
                 for numberOfSymbols in NumberOfSymbols.allCases {
                     for color in ElemColor.allCases {
-                        let content = cardContentFactory(symbol, shading, numberOfSymbols, color)
                         let id =  "\(symbol.rawValue.prefix(4))_\(shading.rawValue.prefix(4))_\(numberOfSymbols.rawValue.prefix(4))_\(color.rawValue.prefix(4))"
-                        let card = Card(content: content, id: id, symbol: symbol,
+                        let card = Card(id: id, symbol: symbol,
                                         shading: shading, numSymbols: numberOfSymbols, elemColor: color)
                         cards.append(card)
                     }
@@ -206,8 +203,7 @@ struct SetGame<CardContent> {
         }
         
         var isSelected = false
-        // maybe this could be a picture or some shit that doesn't affect the gameplay and it's less impt to access it?
-        let content: CardContent
+        // content: not present but maybe this could be a picture or something and it's less impt to access
         let id: String
         let symbol: Symbol
         let shading: Shading

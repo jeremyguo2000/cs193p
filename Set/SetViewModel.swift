@@ -7,15 +7,12 @@
 
 import SwiftUI
 
-// TODO: typedef away some of the obscure shit
 class SetViewModel: ObservableObject {
     
-    @Published private var model: SetGame<CardProperties>
+    @Published private var model: SetGame
     
-    private static func createSetGame() -> SetGame<CardProperties> {
-        return SetGame() {symbol, shading, numberOfSymbols, color in
-            return CardProperties(symbol: symbol, shading: shading, numberOfSymbols: numberOfSymbols, color: color)
-        }
+    private static func createSetGame() -> SetGame {
+        return SetGame() 
     }
     
     init() {
@@ -31,11 +28,11 @@ class SetViewModel: ObservableObject {
         model = SetViewModel.createSetGame()
     }
 
-    func choose(_ card: SetGame<CardProperties>.Card) {
+    func choose(_ card: SetGame.Card) {
         model.choose(card)
     }
     
-    func getSetStatus() -> SetGame<CardProperties>.chosenCardsState {
+    func getSetStatus() -> SetGame.chosenCardsState {
         return model.curSetStatus
     }
     
@@ -43,7 +40,7 @@ class SetViewModel: ObservableObject {
         return model.numDealtCards == model.cards.count
     }
 
-    var cards: Array<SetGame<CardProperties>.Card> {
+    var cards: Array<SetGame.Card> {
         let numDealt = model.numDealtCards
         return Array(model.cards.prefix(numDealt)).filter { card in
             !card.isMatched

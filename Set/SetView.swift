@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct SetView: View {
     
     // Observed objects are always passed into you. This view is passed into you
