@@ -14,9 +14,11 @@ struct SetView: View {
     
     var body: some View {
         VStack {
-            ScrollView {
+            // TODO: the ScrollView messes up the adaptive shit
+            // TODO: switch to ScrollView when more than 5 columns
+            //ScrollView {
                 cards
-            }
+            //}
             Spacer()
             (viewModel.isDeckEmpty() ? nil :
             Button("Deal") {
@@ -30,17 +32,47 @@ struct SetView: View {
     }
 
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85), spacing: 0)], spacing: 0) {
-            ForEach(viewModel.cards) { card in
-                CardView(card: card, viewModel: viewModel)
-                    .aspectRatio(2/3, contentMode: .fit)
-                    .padding(8)
-                    .onTapGesture {
-                        viewModel.choose(card)
-                    }
+        GeometryReader { geometry in
+            
+            let gridItemSize = gridItemWidthThatFits(
+                count: viewModel.cards.count,
+                size: geometry.size,
+                atAspectRatio: 2/3
+            )
+            
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
+                ForEach(viewModel.cards) { card in
+                    CardView(card: card, viewModel: viewModel)
+                        .aspectRatio(2/3, contentMode: .fit)
+                        .padding(6)
+                        .onTapGesture {
+                            viewModel.choose(card)
+                        }
+                }
             }
         }
     }
+    
+    func gridItemWidthThatFits (count: Int, size: CGSize,
+        atAspectRatio aspectRatio: CGFloat) -> CGFloat {
+        
+        let count = CGFloat(count)
+        var columnCount = 1.0
+        
+        repeat {
+            let width = size.width / columnCount
+            let height = width / aspectRatio
+            let rowCount = (count / columnCount).rounded(.up)
+            if rowCount * height < size.height {
+                return (size.width / columnCount).rounded(.down)
+            }
+            columnCount += 1
+        } while columnCount < count
+        
+        return min(size.width / count, size.height*aspectRatio).rounded(.down)
+    }
+    
+    
 }
 
 #Preview {
