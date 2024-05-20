@@ -8,7 +8,6 @@
 import Foundation
 
 // TODO: get rid of CardContent, seems redundant
-// TODO: game end state?
 
 struct SetGame<CardContent> {
     
@@ -43,11 +42,10 @@ struct SetGame<CardContent> {
     }
     
     // Refactored with chatGPT but i had to edit some parts
-    // handleMatch expects 3 cards to already be selected
-    // this marks valid matches as such, and deselects them
-    // if they are not valid we may or may not deselect,
-    // depending on whether this is from clicking the 4th card
-    // or from pressing the deal button
+    // the actual set checking logic is in checkForSet
+    // this code is responsible for marking the cards as matched
+    // chosenIndex might be the idx of the 4th clicked card
+    // or null if from pressing the deal button
     private mutating func checkMatch(_ chosenIndex:Int?) -> Bool {
         var cardIsFromMatchedSet = false
         if curSetStatus == chosenCardsState.valid {
@@ -64,7 +62,8 @@ struct SetGame<CardContent> {
     }
     
     // this path is from clicking the fourth card
-    // TODO: there is a bug where it's not dealing after having a match on the 4th card
+    // note we deal if there's a match (to replace),
+    // but just deselect it's not (and has 3 cards)
     private mutating func checkMatchAndDeal(_ chosenIndex: Int?) -> Bool {
         var cardIsFromMatchedSet = false
         if chosenCardIdxs.count == setSize {
@@ -75,13 +74,11 @@ struct SetGame<CardContent> {
     }
     
     // this path is from the actual button
+    // note this way we always deal 3 cards, valid or invalid
     mutating func manualDeal() {
-        let oldState = curSetStatus
-        if chosenCardIdxs.count == setSize {
+        if curSetStatus == chosenCardsState.valid {
             _ = checkMatch(nil)
-        }
-        
-        if oldState != chosenCardsState.valid {
+        } else {
             dealThreeCards()
         }
     }
@@ -170,9 +167,6 @@ struct SetGame<CardContent> {
     // we use generic since maybe the card properties could be Int or String
     // written by chatgpt
     func allSameOrDifferent<U: Equatable & Hashable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
-        
-        // TODO: switch to false, then remove when done testing
-        return true
         
         // IMPT: you need to access this here since allSame and allDiff access the elem directly
         let firstVal = property(chosenCardIdxs[0])
