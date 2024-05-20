@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+// TODO: i think some of this code belongs in the ViewModel
+
 struct CardView: View {
     let card: SetGame.Card
     @ObservedObject var viewModel: SetViewModel
@@ -29,21 +31,7 @@ struct CardView: View {
                     getViewFromCard(card)
                 }
             }
-        }.overlay(getSelectionOverlay().opacity(card.isSelected ? Constants.cardSelectedOpacity : Constants.cardUnselectedOpacity))
-    }
-    
-    func getSelectionOverlay() -> SwiftUI.Color {
-        
-        switch(viewModel.getSetStatus()) {
-        case .too_few:
-            return Color.gray
-        case .invalid:
-            return Color.red
-        case .valid:
-            return Color.green
-        }
-            
-
+        }.overlay(viewModel.getSelectionOverlay().opacity(card.isSelected ? Constants.cardSelectedOpacity : Constants.cardUnselectedOpacity))
     }
     
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
@@ -58,8 +46,8 @@ struct CardView: View {
             AnyShape(Rectangle())
         }
         
-        let shapeColor = getColor(card)
-        let shapeOpacity = getShading(card)
+        let shapeColor = viewModel.getColor(card)
+        let shapeOpacity = viewModel.getShading(card)
         
         // don't need explicit return with @ViewBuilder
         shape
@@ -68,28 +56,7 @@ struct CardView: View {
             .duplicate(count: card.numSymbols.getNumSymbols())
             .padding(Constants.shapePadding)
     }
-    
-    func getColor(_ card: SetGame.Card) -> SwiftUI.Color {
-        switch (card.elemColor) {
-        case .blue:
-            SwiftUI.Color.blue
-        case .yellow:
-            SwiftUI.Color.yellow
-        case .purple:
-            SwiftUI.Color.purple
-        }
-    }
-    
-    func getShading(_ card: SetGame.Card) -> Double {
-        switch (card.shading) {
-        case .empty:
-            0
-        case .stripe:
-            0.5
-        case .fill:
-            1
-        }
-    }
+
 }
 
 struct DuplicateModifier: ViewModifier {

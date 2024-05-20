@@ -46,5 +46,38 @@ class SetViewModel: ObservableObject {
             !card.isMatched
         }
     }
+    
+    func getSelectionOverlay() -> SwiftUI.Color {
+        switch(getSetStatus()) {
+            case .too_few:
+                return Color.gray
+            case .invalid:
+                return Color.red
+            case .valid:
+                return Color.green
+        }
+    }
+    
+    func getColor(_ card: SetGame.Card) -> SwiftUI.Color {
+        switch (card.elemColor) {
+        case .blue:
+            SwiftUI.Color.blue
+        case .yellow:
+            SwiftUI.Color.yellow
+        case .purple:
+            SwiftUI.Color.purple
+        }
+    }
+    
+    func getShading(_ card: SetGame.Card) -> Double {
+        switch (card.shading) {
+        case .empty:
+            0
+        case .stripe:
+            0.5
+        case .fill:
+            1
+        }
+    }
 }
 

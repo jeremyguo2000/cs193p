@@ -23,7 +23,6 @@ struct SetView: View {
     var body: some View {
         VStack {
             cards
-            Spacer()
             (viewModel.isDeckEmpty() ? nil :
             Button("Deal") {
                 viewModel.deal()

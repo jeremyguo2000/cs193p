@@ -127,7 +127,7 @@ struct SetGame {
     
     // checks if the current set of cards is a set
     // also marks the cards as matched if so
-    mutating func checkForSet() -> Void {
+    private mutating func checkForSet() -> Void {
         print("checking for set")
     
         if chosenCardIdxs.count < setSize {
@@ -211,13 +211,11 @@ struct SetGame {
         let elemColor: ElemColor
         var isMatched = false
     }
-    
-
-    
 }
 
+
 enum Symbol: String, CaseIterable {
-    case diamond 
+    case diamond
     case rectangle
     case oval
 }
@@ -251,10 +249,6 @@ enum ElemColor: String, CaseIterable {
     case purple
 }
 
-struct CardProperties {
-    let symbol: Symbol
-    let shading: Shading
-    let numberOfSymbols: NumberOfSymbols
-    let color: ElemColor
-}
+
+
 
