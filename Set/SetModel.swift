@@ -8,6 +8,7 @@
 import Foundation
 
 // TODO: get rid of CardContent, seems redundant
+// TODO: game end state?
 
 struct SetGame<CardContent> {
     
@@ -56,20 +57,18 @@ struct SetGame<CardContent> {
             if let chosenIndex = chosenIndex {
                 cardIsFromMatchedSet = chosenCardIdxs.contains(chosenIndex)
             }
+            dealThreeCards()
             deselectAllCards()
         }
         return cardIsFromMatchedSet
     }
     
     // this path is from clicking the fourth card
+    // TODO: there is a bug where it's not dealing after having a match on the 4th card
     private mutating func checkMatchAndDeal(_ chosenIndex: Int?) -> Bool {
         var cardIsFromMatchedSet = false
-        
         if chosenCardIdxs.count == setSize {
             cardIsFromMatchedSet = checkMatch(chosenIndex)
-            if curSetStatus == chosenCardsState.valid {
-                dealThreeCards()
-            }
             deselectAllCards()
         }
         return cardIsFromMatchedSet
@@ -77,10 +76,14 @@ struct SetGame<CardContent> {
     
     // this path is from the actual button
     mutating func manualDeal() {
+        let oldState = curSetStatus
         if chosenCardIdxs.count == setSize {
             _ = checkMatch(nil)
         }
-        dealThreeCards()
+        
+        if oldState != chosenCardsState.valid {
+            dealThreeCards()
+        }
     }
     
     // helper function for deal
@@ -167,6 +170,9 @@ struct SetGame<CardContent> {
     // we use generic since maybe the card properties could be Int or String
     // written by chatgpt
     func allSameOrDifferent<U: Equatable & Hashable>(_ chosenCardIdxs : [Int], property: (Int) -> U) -> Bool {
+        
+        // TODO: switch to false, then remove when done testing
+        return true
         
         // IMPT: you need to access this here since allSame and allDiff access the elem directly
         let firstVal = property(chosenCardIdxs[0])

@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-
-
-// TODO: deal 12 cards (at any point in time, there should always be 12 cards)
-// keep finding sets until there are no more cards on the table
-
 class SetViewModel: ObservableObject {
     
     @Published private var model: SetGame<CardProperties>
