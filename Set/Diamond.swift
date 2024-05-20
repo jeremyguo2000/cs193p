@@ -25,8 +25,6 @@ struct Diamond: Shape {
 let W = CGFloat(40)
 let H = CGFloat(20)
 
-// TODO: use a Grid
-
 struct Diamond_Previews: PreviewProvider {
     static var previews: some View {
         VStack() {

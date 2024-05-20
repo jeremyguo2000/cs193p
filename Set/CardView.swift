@@ -8,12 +8,6 @@
 import SwiftUI
 
 // TODO: factor out your magic constants and shit
-// TODO: adaptive sizing of cards
-// TODO: card sizes must be UNIFORM
-// TODO: GeometryReader to figure out the card's aspect ratio
-// TODO: should shapes expand to take up all available space?
-//       or should they always take up the same space
-// TODO: AspectVGrid??
 
 struct CardView: View {
     let card: SetGame<CardProperties>.Card
@@ -45,9 +39,6 @@ struct CardView: View {
 
     }
     
-    
-    // TODO: low priority why do i need this goddamn AnyShape
-    // TODO: use generics??
     //https://stackoverflow.com/questions/62602166/how-to-use-same-set-of-modifiers-for-various-shapes/62605936#62605936
     @ViewBuilder
     func getViewFromCard(_ card: SetGame<CardProperties>.Card) -> some View {

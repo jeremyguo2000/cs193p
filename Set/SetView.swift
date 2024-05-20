@@ -14,11 +14,7 @@ struct SetView: View {
     
     var body: some View {
         VStack {
-            // TODO: the ScrollView messes up the adaptive shit
-            // TODO: switch to ScrollView when more than 5 columns
-            //ScrollView {
-                cards
-            //}
+            cards
             Spacer()
             (viewModel.isDeckEmpty() ? nil :
             Button("Deal") {
